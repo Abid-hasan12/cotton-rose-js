@@ -33,7 +33,6 @@ export default function HomePage() {
             <span className="hero__brand-rose">Rose</span>{" "}
             BD is a leading, fully compliant garment buying house and apparel sourcing agency based in Uttara, Dhaka—one of Bangladesh’s key hubs for the textile and apparel industry.
           </p>
-          <p className="hero__tagline">We serve as a trusted, full-service supply chain partner to global fashion retailers, department stores, brand owners, and high-volume importers across Europe, North America, Australia, and Asia.</p>
           <div className="hero__actions">
             <Link href="/contact" className="btn btn--gold">Get a Quote</Link>
             <Link href="/products" className="btn btn--outline">Explore Products</Link>
