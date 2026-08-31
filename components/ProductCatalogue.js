@@ -1,58 +1,91 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import FadeIn from "./FadeIn";
 import { products } from "@/data/products";
 
-const filters = ["all", ...products.map((product) => product.id)];
+const maxCapacity = Math.max(...products.map((product) => product.capacity));
+
+function DetailList({ title, items, variant }) {
+  return (
+    <div className={`portfolio-card__detail portfolio-card__detail--${variant}`}>
+      <div className="portfolio-card__detail-heading">
+        <span className="portfolio-card__detail-icon" aria-hidden="true">{variant === "fabric" ? "◇" : "+"}</span>
+        <h4>{title}</h4>
+      </div>
+      <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul>
+    </div>
+  );
+}
 
 export default function ProductCatalogue() {
-  const [filter, setFilter] = useState("all");
-  const [selected, setSelected] = useState(null);
-  const closeButtonRef = useRef(null);
-  const triggerRef = useRef(null);
+  const [activeId, setActiveId] = useState(products[0].id);
 
   useEffect(() => {
-    document.body.style.overflow = selected ? "hidden" : "";
-    const onKeyDown = (event) => event.key === "Escape" && setSelected(null);
-    document.addEventListener("keydown", onKeyDown);
-    if (selected) closeButtonRef.current?.focus();
-    else triggerRef.current?.focus();
-    return () => { document.body.style.overflow = ""; document.removeEventListener("keydown", onKeyDown); };
-  }, [selected]);
+    const sections = products.map(({ id }) => document.getElementById(id)).filter(Boolean);
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible) setActiveId(visible.target.id);
+    }, { rootMargin: "-25% 0px -55%", threshold: [0.1, 0.3, 0.6] });
 
-  const openProduct = (product, trigger) => {
-    triggerRef.current = trigger;
-    setSelected(product);
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  const jumpTo = (id) => {
+    setActiveId(id);
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
     <>
-      <FadeIn className="filter-bar">
-        {filters.map((value) => <button key={value} className={`filter-btn${filter === value ? " filter-btn--active" : ""}`} onClick={() => setFilter(value)}>{value === "all" ? "All" : value[0].toUpperCase() + value.slice(1)}</button>)}
+      <FadeIn as="nav" className="portfolio-nav" aria-label="Product categories">
+        {products.map((product, index) => (
+          <button
+            key={product.id}
+            className={`portfolio-nav__item${activeId === product.id ? " portfolio-nav__item--active" : ""}`}
+            onClick={() => jumpTo(product.id)}
+            aria-current={activeId === product.id ? "true" : undefined}
+          >
+            <span>0{index + 1}</span>
+            {product.name}
+          </button>
+        ))}
       </FadeIn>
-      <div className="products__grid">
-        {products.map((product) => (
-          <FadeIn as="article" id={product.id} className="product-card" key={product.id} hidden={filter !== "all" && filter !== product.id} role="button" tabIndex={0} aria-label={`View ${product.name} details`} onClick={(event) => openProduct(product, event.currentTarget)} onKeyDown={(event) => {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              openProduct(product, event.currentTarget);
-            }
-          }}>
-            <div className="product-card__img-wrap"><Image src={product.image} alt={product.alt} fill sizes="(max-width: 768px) 50vw, 33vw" /></div>
-            <div className="product-card__body"><span className="product-card__tag">{product.name}</span><h3 className="product-card__title">{product.title}</h3><p>{product.summary}</p></div>
+
+      <div className="portfolio-list">
+        {products.map((product, index) => (
+          <FadeIn as="article" id={product.id} className={`portfolio-card${index % 2 ? " portfolio-card--reverse" : ""}`} key={product.id}>
+            <div className="portfolio-card__visual">
+              <Image src={product.image} alt={product.alt} fill sizes="(max-width: 768px) 100vw, 46vw" />
+              <span className="portfolio-card__index">0{index + 1}</span>
+              <div className="portfolio-card__image-title"><span>Category</span><h3>{product.name}</h3></div>
+            </div>
+
+            <div className="portfolio-card__content">
+              <div className="portfolio-card__topline">
+                <span className="section-label">Production capability</span>
+                <span className="portfolio-card__count">0{index + 1} / 04</span>
+              </div>
+              <div className="portfolio-card__capacity">
+                <div>
+                  <strong className="portfolio-card__capacity-number">{product.capacityLabel}</strong>
+                  <span className="portfolio-card__capacity-unit">Pcs / month</span>
+                </div>
+                <div className="portfolio-card__capacity-track" aria-hidden="true">
+                  <span style={{ "--capacity-width": `${(product.capacity / maxCapacity) * 100}%` }} />
+                </div>
+              </div>
+              <div className="portfolio-card__details">
+                <DetailList title="Product Offering" items={product.offerings} variant="offering" />
+                <DetailList title="Fabric Construction" items={product.fabrics} variant="fabric" />
+              </div>
+            </div>
           </FadeIn>
         ))}
-      </div>
-      <div className={`modal${selected ? " modal--open" : ""}`} aria-hidden={!selected} onMouseDown={(event) => event.target === event.currentTarget && setSelected(null)}>
-        <div className="modal__box" role="dialog" aria-modal="true" aria-label={selected?.name || "Product details"}>
-          <button ref={closeButtonRef} className="modal__close" aria-label="Close" onClick={() => setSelected(null)}>&times;</button>
-          {selected && <div className="modal__img-wrap"><Image src={selected.image} alt={selected.alt} fill sizes="(max-width: 640px) 100vw, 640px" /></div>}
-          <div className="modal__body"><h3 className="modal__title">{selected?.name}</h3><p className="modal__desc">{selected?.description}</p>
-            <div className="modal__specs"><span><strong>MOQ:</strong> No strict MOQ</span><span><strong>Lead Time:</strong> 45–90 days</span><span><strong>Markets:</strong> Europe, N. America, Middle East</span><span><strong>Compliance:</strong> ISO 9001, GOTS, OEKO-TEX</span></div>
-          </div>
-        </div>
       </div>
     </>
   );
