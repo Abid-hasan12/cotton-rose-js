@@ -2,6 +2,7 @@
 
 import { cloneElement, useState } from "react";
 import FadeIn from "./FadeIn";
+import { products } from "@/data/products";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phonePattern = /^[0-9+()\-\s]{7,}$/;
@@ -38,7 +39,7 @@ export default function ContactForm() {
       <div className="form__row">
         <Field label="Email Address" id="email" error={errors.email}><input type="email" id="email" name="email" placeholder="you@company.com" /></Field>
         <Field label="Product Interest" id="product" error={errors.product}>
-          <select id="product" name="product" defaultValue=""><option value="">Select a category</option><option value="knitwear">Knitwear</option><option value="woven">Woven</option><option value="denim">Denim</option><option value="sweater">Sweater</option><option value="outerwear">Outerwear</option><option value="activewear">Activewear</option></select>
+          <select id="product" name="product" defaultValue=""><option value="">Select a category</option>{products.map((product) => <option value={product.id} key={product.id}>{product.name}</option>)}</select>
         </Field>
       </div>
       <Field label="Estimated Quantity" id="quantity"><input type="text" id="quantity" name="quantity" placeholder="e.g. 5,000 pcs" /></Field>

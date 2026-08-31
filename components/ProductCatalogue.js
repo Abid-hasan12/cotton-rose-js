@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import FadeIn from "./FadeIn";
 import { products } from "@/data/products";
@@ -83,6 +84,7 @@ export default function ProductCatalogue() {
                 <DetailList title="Product Offering" items={product.offerings} variant="offering" />
                 <DetailList title="Fabric Construction" items={product.fabrics} variant="fabric" />
               </div>
+              <Link href={`/products/${product.id}`} className="portfolio-card__link">Explore {product.name} <span aria-hidden="true">→</span></Link>
             </div>
           </FadeIn>
         ))}
