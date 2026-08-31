@@ -82,7 +82,7 @@ export default function SiteHeader() {
               aria-controls="products-menu"
               onClick={() => setProductsOpen((value) => !value)}
             >
-              Products <span className="nav__dropdown-chevron" aria-hidden="true" />
+              Categories <span className="nav__dropdown-chevron" aria-hidden="true" />
             </button>
             <ul id="products-menu" className="nav__dropdown-menu">
               {products.map((product) => (
