@@ -3,6 +3,7 @@ import Image from "next/image";
 import FadeIn from "@/components/FadeIn";
 import Counter from "@/components/Counter";
 import CtaBanner from "@/components/CtaBanner";
+import SourcingProcess from "@/components/SourcingProcess";
 import { products } from "@/data/products";
 
 const features = [
@@ -11,14 +12,6 @@ const features = [
   ["Fast Lead Time", "Streamlined production planning keeps orders moving on schedule."],
   ["Full Traceability", "End-to-end visibility from raw material to finished, shipped goods."],
   ["Dedicated Merchandising", "A single point of contact managing your account from sample to shipment."]
-];
-
-const process = [
-  ["Sourcing", "Matching your requirements to the right factory partner."],
-  ["Sampling", "Development and approval of pre-production samples."],
-  ["Production", "Managed manufacturing with continuous progress tracking."],
-  ["Quality Control", "Multi-stage inspection against agreed AQL standards."],
-  ["Shipping", "Documentation and logistics coordination to final destination."]
 ];
 
 export default function HomePage() {
@@ -75,16 +68,17 @@ export default function HomePage() {
       <section className="section">
         <div className="container">
           <FadeIn className="section__head"><span className="section-label">How We Work</span><h2>Our Sourcing Process</h2><p>A structured, transparent workflow from first inquiry to final shipment.</p></FadeIn>
-          <div className="process">
-            {process.map(([title, text], index) => <FadeIn className="process__step" key={title}><div className="process__num">{index + 1}</div><h3 className="process__title">{title}</h3><p>{text}</p></FadeIn>)}
-          </div>
+          <SourcingProcess />
         </div>
       </section>
 
       <section className="section section--grey">
         <div className="container">
-          <FadeIn className="section__head"><span className="section-label">Trust &amp; Compliance</span><h2>Certifications</h2></FadeIn>
-          <FadeIn className="certs">{["ISO 9001", "GOTS", "OEKO-TEX", "Sedex", "amfori BSCI"].map((cert) => <span className="cert-badge" key={cert}>{cert}</span>)}</FadeIn>
+          <FadeIn className="section__head"><span className="section-label">Trust &amp; Compliance</span>
+          <h2>Certifications</h2>
+          <h4 className="certs__text">We exclusively partner with factories audited and certified by leading global accreditation.</h4>
+          </FadeIn>
+          <FadeIn className="certs">{["RSC / ACCORD", "BSCI Compliant", "SEDEX SMETA 4-PILLAR", "WRAP Certified", "OEKO-TEX Standard 100", "GOTS Organic", "GRS Recycled", "HIGG Index FEM"].map((cert) => <span className="cert-badge" key={cert}>{cert}</span>)}</FadeIn>
         </div>
       </section>
 
