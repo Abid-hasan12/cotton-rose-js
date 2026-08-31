@@ -52,10 +52,10 @@ export default function HomePage() {
 
       <section className="section" id="categories">
         <div className="container">
-          <FadeIn className="section__head"><span className="section-label">What We Source</span><h2>Product Categories</h2><p>Full-package sourcing across six core apparel categories, backed by a vetted factory network.</p></FadeIn>
+          <FadeIn className="section__head"><span className="section-label">What We Source</span><h2>Product Categories</h2><p>Full-package sourcing across four core apparel categories, backed by a vetted factory network.</p></FadeIn>
           <div className="category-grid">
             {products.map(({ id, name, image, alt }) => (
-              <FadeIn as={Link} href={`/products#${id}`} className="category-card" key={id}>
+              <FadeIn as={Link} href={`/products/${id}`} className="category-card" key={id}>
                 <Image src={image} alt={alt} fill sizes="(max-width: 768px) 50vw, 33vw" />
                 <div className="category-card__overlay"><span className="category-card__title">{name}</span><span className="category-card__link">View products →</span></div>
               </FadeIn>

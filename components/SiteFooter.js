@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { products } from "@/data/products";
 
 export default function SiteFooter() {
   const pathname = usePathname();
@@ -25,12 +26,9 @@ export default function SiteFooter() {
             </ul>
           </div>
           <div className="footer__col">
-            <h4>Products</h4>
+            <h4><Link href="/products">Product Categories</Link></h4>
             <ul>
-              <li><Link href="/products#knitwear">Knitwear</Link></li>
-              <li><Link href="/products#woven">Woven</Link></li>
-              <li><Link href="/products#denim">Denim</Link></li>
-              <li><Link href="/products#sweater">Sweater</Link></li>
+              {products.map((product) => <li key={product.id}><Link href={`/products/${product.id}`}>{product.name}</Link></li>)}
             </ul>
           </div>
           <div className="footer__col">
