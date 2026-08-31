@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* =========================================================
    COTTONROSE — CORPORATE B2B STYLESHEET
    Palette + tokens defined once in :root, used everywhere.

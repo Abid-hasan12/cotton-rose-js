@@ -56,6 +56,19 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="bg-brand-navy py-16 text-white md:py-20" aria-labelledby="diversified-lines-title">
+        <div className="container">
+          <FadeIn className="grid items-center gap-8 lg:grid-cols-[1fr_auto]">
+            <div className="max-w-3xl">
+              <span className="mb-3 block text-xs font-bold uppercase tracking-[0.18em] text-brand-gold">Extended portfolio</span>
+              <h2 id="diversified-lines-title" className="text-3xl font-bold text-white md:text-4xl">Diversified Product Lines</h2>
+              <p className="mt-4 max-w-2xl text-white/70">Explore 14 additional apparel lines—from swimwear and shirts to denim, fleece, and specialized workwear—with a dedicated sample gallery for each category.</p>
+            </div>
+            <Link href="/diversified-products" className="inline-flex items-center justify-center gap-3 rounded-lg bg-brand-gold px-7 py-4 font-bold text-brand-navy transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-brand-navy">View diversified lines <span aria-hidden="true">→</span></Link>
+          </FadeIn>
+        </div>
+      </section>
+
       <section className="section section--grey">
         <div className="container">
           <FadeIn className="section__head"><span className="section-label">Our Advantage</span><h2>Why Choose Cottonrose</h2><p>A merchandising-first approach built for long-term buyer partnerships.</p></FadeIn>
