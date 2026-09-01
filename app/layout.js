@@ -9,13 +9,13 @@ export const metadata = {
   },
   description: company.description,
   applicationName: company.name,
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     siteName: company.name,
     title: `${company.name} | ${company.tagline}`,
     description: company.description,
     url: "/",
+    images: [{ url: "/images/banner2.png", width: 1262, height: 848, alt: "CottonRose apparel sourcing and product development" }],
   },
   twitter: {
     card: "summary_large_image",

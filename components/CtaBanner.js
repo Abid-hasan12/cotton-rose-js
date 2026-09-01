@@ -1,7 +1,7 @@
 import Link from "next/link";
 import FadeIn from "./FadeIn";
 
-const image = "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1800&q=80";
+const image = "/images/banner2.png";
 
 export default function CtaBanner({ title, text, button = "Get a Quote" }) {
   return (

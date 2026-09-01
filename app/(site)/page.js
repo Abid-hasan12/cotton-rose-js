@@ -1,101 +1,55 @@
 import Link from "next/link";
 import Image from "next/image";
 import FadeIn from "@/components/FadeIn";
-import Counter from "@/components/Counter";
 import CtaBanner from "@/components/CtaBanner";
 import SourcingProcess from "@/components/SourcingProcess";
 import { products } from "@/data/products";
+import { company } from "@/data/company";
+
+const proofPoints = [
+  ["Buyer Representation", "One accountable CottonRose contact coordinates the brief, decisions, milestones, and follow-up."],
+  ["Order-Specific Sourcing", "Product, material, quantity, compliance, price, and delivery needs guide every sourcing recommendation."],
+  ["Quality Coordination", "Agreed material, workmanship, inspection, and shipment-readiness checkpoints are documented and followed."],
+  ["Clear Communication", "Buyers receive practical updates, risk escalation, and decision records throughout the order journey."],
+];
 
 const features = [
-  ["No Strict MOQ", "Flexible order quantities suited to both emerging and established brands."],
-  ["Compliance First", "Every partner factory is audited against internationally recognized standards."],
-  ["Fast Lead Time", "Streamlined production planning keeps orders moving on schedule."],
-  ["Full Traceability", "End-to-end visibility from raw material to finished, shipped goods."],
-  ["Dedicated Merchandising", "A single point of contact managing your account from sample to shipment."]
+  ["Brief-led sourcing", "Supplier and material options are assessed against the requirements of each buyer program."],
+  ["Transparent commercials", "Costing assumptions, quantities, lead times, and responsibilities are clarified before confirmation."],
+  ["Dedicated coordination", "A consistent contact follows product development, approvals, order status, quality, and shipment."],
+  ["Private due diligence", "Applicable supplier documents are reviewed and shared with qualified buyers for the proposed order."],
 ];
 
 export default function HomePage() {
   return (
     <>
-      <section className="hero" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&w=1800&q=80')" }}>
+      <section className="hero" style={{ backgroundImage: "url('/images/banner2.png')" }}>
         <div className="container hero__content">
-          <span className="hero__eyebrow">Premier Apparel Sourcing &amp; SCM & Garment Exporter | Bangladesh</span>
-          <h1 className="hero__title">Your Trusted Apparel Sourcing Partner from Bangladesh</h1>
-          <p className="hero__tagline">
-            <span className="hero__brand-cotton">Cotton</span>{" "}
-            <span className="hero__brand-rose">Rose</span>{" "}
-            BD is a leading, fully compliant garment buying house and apparel sourcing agency based in Uttara, Dhaka—one of Bangladesh’s key hubs for the textile and apparel industry.
-          </p>
-          <div className="hero__actions">
-            <Link href="/contact" className="btn btn--gold">Get a Quote</Link>
-            <Link href="/products" className="btn btn--outline">Explore Products</Link>
-          </div>
+          <span className="hero__eyebrow">{company.tagline} | Bangladesh</span>
+          <h1 className="hero__title">Your sourcing team between the buyer brief and final shipment</h1>
+          <p className="hero__tagline">CottonRose is a Dhaka-based apparel buying house representing international buyers through product development, sourcing, quality assurance, order management, and shipment coordination.</p>
+          <div className="hero__actions"><Link href="/contact" className="btn btn--gold">Start an Inquiry</Link><Link href="/products" className="btn btn--outline">View Product Offering</Link></div>
         </div>
       </section>
 
-      <section className="stats">
-        <div className="container stats__grid">
-          <div className="stats__item"><div className="stats__number"><Counter to={12} />+</div><div className="stats__label">Years OF Experience</div></div>
-          <div className="stats__item"><div className="stats__number"><Counter to={16} />M+</div><div className="stats__label">ANNUAL GARMENT EXPORTS</div></div>
-          <div className="stats__item"><div className="stats__number"><Counter to={45} />+</div><div className="stats__label">AUDITED PARTNER MILLS</div></div>
-          <div className="stats__item"><div className="stats__number"><Counter to={99} />.5%</div><div className="stats__label">ON-TIME DELIVERY RATE</div></div>
-        </div>
-      </section>
+      <section className="proof-strip" aria-label="CottonRose service principles"><div className="container proof-strip__grid">{proofPoints.map(([title, text]) => <div className="proof-strip__item" key={title}><strong>{title}</strong><span>{text}</span></div>)}</div></section>
 
-      <section className="section" id="categories">
-        <div className="container">
-          <FadeIn className="section__head"><span className="section-label">What We Source</span><h2>Product Categories</h2><p>Full-package sourcing across four core apparel categories, backed by a vetted factory network.</p></FadeIn>
-          <div className="category-grid">
-            {products.map(({ id, name, image, alt }) => (
-              <FadeIn as={Link} href={`/products/${id}`} className="category-card" key={id}>
-                <Image src={image} alt={alt} fill sizes="(max-width: 768px) 50vw, 33vw" />
-                <div className="category-card__overlay"><span className="category-card__title">{name}</span><span className="category-card__link">View products →</span></div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
+      <section className="section" id="products"><div className="container">
+        <FadeIn className="section__head"><span className="section-label">What we source</span><h2>Product Offering</h2><p>Four core sourcing groups supported by a broader catalogue. Availability is confirmed against each buyer&apos;s tech pack, quantity, materials, standards, and delivery target.</p></FadeIn>
+        <div className="category-grid">{products.map(({ id, name, image, alt, summary }) => <FadeIn as={Link} href={`/products/${id}`} className="category-card" key={id}><Image src={image} alt={alt} fill sizes="(max-width: 768px) 100vw, 50vw" /><div className="category-card__overlay"><span className="category-card__title">{name}</span><span className="category-card__summary">{summary}</span><span className="category-card__link">Explore offering →</span></div></FadeIn>)}</div>
+        <FadeIn className="section-action"><Link href="/diversified-products" className="btn btn--navy">View Diversified Product Lines</Link></FadeIn>
+      </div></section>
 
-      <section className="bg-brand-navy py-16 text-white md:py-20" aria-labelledby="diversified-lines-title">
-        <div className="container">
-          <FadeIn className="grid items-center gap-8 lg:grid-cols-[1fr_auto]">
-            <div className="max-w-3xl">
-              <span className="mb-3 block text-xs font-bold uppercase tracking-[0.18em] text-brand-gold">Extended portfolio</span>
-              <h2 id="diversified-lines-title" className="text-3xl font-bold text-white md:text-4xl">Diversified Product Lines</h2>
-              <p className="mt-4 max-w-2xl text-white/70">Explore 14 additional apparel lines—from swimwear and shirts to denim, fleece, and specialized workwear—with a dedicated sample gallery for each category.</p>
-            </div>
-            <Link href="/diversified-products" className="inline-flex items-center justify-center gap-3 rounded-lg bg-brand-gold px-7 py-4 font-bold text-brand-navy transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-brand-navy">View diversified lines <span aria-hidden="true">→</span></Link>
-          </FadeIn>
-        </div>
-      </section>
+      <section className="section section--grey"><div className="container">
+        <FadeIn className="section__head"><span className="section-label">Why CottonRose</span><h2>Professional buyer advocacy</h2><p>Our role is to keep buyer requirements visible, decisions documented, and sourcing activity accountable.</p></FadeIn>
+        <div className="features">{features.map(([title, text]) => <FadeIn className="feature-card" key={title}><div className="feature-card__icon" aria-hidden="true">✓</div><h3 className="feature-card__title">{title}</h3><p>{text}</p></FadeIn>)}</div>
+      </div></section>
 
-      <section className="section section--grey">
-        <div className="container">
-          <FadeIn className="section__head"><span className="section-label">Our Advantage</span><h2>Why Choose Cottonrose</h2><p>A merchandising-first approach built for long-term buyer partnerships.</p></FadeIn>
-          <div className="features">
-            {features.map(([title, text]) => <FadeIn className="feature-card" key={title}><div className="feature-card__icon">✓</div><h3 className="feature-card__title">{title}</h3><p>{text}</p></FadeIn>)}
-          </div>
-        </div>
-      </section>
+      <section className="section"><div className="container"><FadeIn className="section__head"><span className="section-label">How we work</span><h2>Our Sourcing Process</h2><p>Six visible stages from the first technical review to shipment coordination.</p></FadeIn><SourcingProcess /></div></section>
 
-      <section className="section">
-        <div className="container">
-          <FadeIn className="section__head"><span className="section-label">How We Work</span><h2>Our Sourcing Process</h2><p>A structured, transparent workflow from first inquiry to final shipment.</p></FadeIn>
-          <SourcingProcess />
-        </div>
-      </section>
+      <section className="section section--grey"><div className="container"><FadeIn className="section__head"><span className="section-label">Quality &amp; compliance</span><h2>Due diligence built around the buyer program</h2><p>CottonRose coordinates quality checkpoints and reviews applicable supplier documentation without presenting supplier credentials as its own.</p><div className="section-action"><Link href="/quality-compliance" className="btn btn--navy">View Our Approach</Link></div></FadeIn></div></section>
 
-      <section className="section section--grey">
-        <div className="container">
-          <FadeIn className="section__head"><span className="section-label">Trust &amp; Compliance</span>
-          <h2>Certifications</h2>
-          <h4 className="certs__text">We exclusively partner with factories audited and certified by leading global accreditation.</h4>
-          </FadeIn>
-          <FadeIn className="certs">{["RSC / ACCORD", "BSCI Compliant", "SEDEX SMETA 4-PILLAR", "WRAP Certified", "OEKO-TEX Standard 100", "GOTS Organic", "GRS Recycled", "HIGG Index FEM"].map((cert) => <span className="cert-badge" key={cert}>{cert}</span>)}</FadeIn>
-        </div>
-      </section>
-
-      <CtaBanner title="Ready to Start Sourcing with Cottonrose?" text="Tell us about your product requirements and our merchandising team will respond within 1–2 business days." />
+      <CtaBanner title="Ready to Discuss Your Sourcing Brief?" text="Send the product, material, quantity, destination, and delivery requirements for an order-specific review." />
     </>
   );
 }
