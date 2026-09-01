@@ -1,9 +1,6 @@
-const image = (id, width = 1200) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${width}&q=86`;
-
-const makeGallery = (name, images) => images.map((src, index) => ({
-  src: image(src),
-  alt: `${name} sample ${index + 1}`,
+const makeGallery = (name, images) => images.map((unused, index) => ({
+  src: `/images/product-placeholder-${index + 1}.svg`,
+  alt: `${name} approved sample photography placeholder ${index + 1}`,
 }));
 
 export const diversifiedProductGroups = ["All", "Knit", "Woven", "Outerwear", "Denim"];

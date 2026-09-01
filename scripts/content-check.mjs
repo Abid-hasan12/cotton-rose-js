@@ -9,6 +9,7 @@ const blocked = [
   [/Cottonrose|Cotton Rose BD/g, "inconsistent public brand spelling"],
   [/20XX|Dhaka-1330|500\+ merchandising|href=["']#["']/gi, "placeholder or dead public content"],
   [/\bwe manufacture\b|\bour factor(?:y|ies)\b|\bproduction capacity\b/gi, "manufacturer positioning"],
+  [/https:\/\/images\./gi, "remote image dependency"],
 ];
 
 async function walk(directory) {
