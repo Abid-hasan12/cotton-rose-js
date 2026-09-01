@@ -34,7 +34,7 @@ export default function LeadershipGrid() {
         ))}
       </div>
       {activeLeader && (
-        <dialog ref={dialogRef} className="leadership-modal" aria-labelledby="leadership-modal-title" aria-describedby="leadership-modal-description" onClose={() => { setActiveLeader(null); requestAnimationFrame(() => triggerRef.current?.focus()); }} onClick={(event) => event.target === event.currentTarget && closeProfile()}>
+        <dialog ref={dialogRef} className="leadership-modal" aria-labelledby="leadership-modal-title" aria-describedby="leadership-modal-description" onCancel={(event) => { event.preventDefault(); closeProfile(); }} onClose={() => { setActiveLeader(null); requestAnimationFrame(() => triggerRef.current?.focus()); }} onClick={(event) => event.target === event.currentTarget && closeProfile()}>
           <div className="leadership-modal__content">
             <button className="leadership-modal__close" type="button" onClick={closeProfile} aria-label="Close leadership profile">×</button>
             <div className="leadership-modal__avatar" aria-hidden="true">{activeLeader.initials}</div>
