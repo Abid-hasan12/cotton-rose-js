@@ -29,7 +29,7 @@ export default function DiversifiedProductCatalogue() {
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" aria-live="polite">
-        {visibleProducts.map((product, index) => (
+        {visibleProducts.map((product) => (
           <Link
             href={`/diversified-products/${product.id}`}
             key={product.id}
@@ -38,7 +38,7 @@ export default function DiversifiedProductCatalogue() {
             <Image src={product.image} alt={product.alt} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover transition duration-700 ease-out group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/30 to-transparent transition-colors duration-500 group-hover:via-brand-navy/45" />
             <div className="absolute inset-x-0 bottom-0 p-6">
-              <div className="mb-3 flex items-center justify-between text-xs font-bold uppercase tracking-[0.16em] text-brand-gold"><span>{product.group}</span><span>{String(index + 1).padStart(2, "0")}</span></div>
+              <div className="mb-3 flex items-center justify-between text-xs font-bold uppercase tracking-[0.16em] text-brand-gold"><span>{product.group}</span><span>{String(product.catalogueIndex).padStart(2, "0")}</span></div>
               <h3 className="text-xl font-bold text-white">{product.name}</h3>
               <div className="mt-3 flex items-center gap-2 text-sm font-semibold text-white/80 transition-colors group-hover:text-brand-gold">View sample gallery <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span></div>
             </div>

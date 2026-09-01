@@ -6,8 +6,6 @@ import { useEffect, useState } from "react";
 import FadeIn from "./FadeIn";
 import { products } from "@/data/products";
 
-const maxCapacity = Math.max(...products.map((product) => product.capacity));
-
 function DetailList({ title, items, variant }) {
   return (
     <div className={`portfolio-card__detail portfolio-card__detail--${variant}`}>
@@ -68,22 +66,15 @@ export default function ProductCatalogue() {
 
             <div className="portfolio-card__content">
               <div className="portfolio-card__topline">
-                <span className="section-label">Production capability</span>
+                <span className="section-label">Sourcing offering</span>
                 <span className="portfolio-card__count">0{index + 1} / 04</span>
               </div>
-              <div className="portfolio-card__capacity">
-                <div>
-                  <strong className="portfolio-card__capacity-number">{product.capacityLabel}</strong>
-                  <span className="portfolio-card__capacity-unit">Pcs / month</span>
-                </div>
-                <div className="portfolio-card__capacity-track" aria-hidden="true">
-                  <span style={{ "--capacity-width": `${(product.capacity / maxCapacity) * 100}%` }} />
-                </div>
-              </div>
+              <p className="portfolio-card__summary">{product.summary}</p>
               <div className="portfolio-card__details">
                 <DetailList title="Product Offering" items={product.offerings} variant="offering" />
                 <DetailList title="Fabric Construction" items={product.fabrics} variant="fabric" />
               </div>
+              <p className="portfolio-card__availability">Order feasibility, supplier selection, minimum quantity, and lead time are confirmed against each buyer brief.</p>
               <Link href={`/products/${product.id}`} className="portfolio-card__link">Explore {product.name} <span aria-hidden="true">→</span></Link>
             </div>
           </FadeIn>

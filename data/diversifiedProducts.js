@@ -25,24 +25,10 @@ const catalogue = [
   ["workwear-outerwear", "Workwear / Outerwear", "Workwear", "Outerwear", "Purpose-built workwear focused on protection, mobility, durability, and brand visibility.", ["Heavy cotton twill", "Ripstop", "High-visibility fabric", "Water-resistant canvas"], ["1578681994506-b8f463449011", "1544022613-e87ca75a784a", "1551028719-00167b16eac5", "1591047139829-d91aecb6caea"]],
 ];
 
-const requestedNames = {
-  "t-shirts": "T' Shirts",
-  "sportswear-activewear": "Sportswear / Active",
-  "woven-mens-bottoms": "Woven men's bottom",
-  "woven-kids-bottoms": "Woven kids bottom 8/12",
-  "fleece-jackets": "Fleece Jacket",
-  "mens-ladies-shirts": "Men's & ladies Shirts 9/12",
-  "denim-long-pants": "Denim long Pants",
-  sweaters: "Sweater",
-  "polo-shirts": "Polo Shirt",
-  "dress-shirts": "Dress Shirt",
-  "workwear-outerwear": "Work wear/10/12 Outer Wear",
-};
-
-export const diversifiedProducts = catalogue.map(([id, catalogueName, shortName, group, summary, materials, images]) => {
-  const name = requestedNames[id] ?? catalogueName;
+export const diversifiedProducts = catalogue.map(([id, catalogueName, shortName, group, summary, materials, images], index) => {
+  const name = catalogueName;
   const gallery = makeGallery(name, images);
-  return { id, name, shortName, group, summary, materials, gallery, image: gallery[0].src, alt: gallery[0].alt };
+  return { id, name, shortName, group, summary, materials, gallery, image: gallery[0].src, alt: gallery[0].alt, catalogueIndex: index + 1 };
 });
 
 export function getDiversifiedProduct(category) {

@@ -1465,6 +1465,22 @@ h2 {
   transition: transform 1s 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
+.portfolio-card__summary {
+  padding: 26px 0;
+  color: rgba(var(--text-rgb), 0.76);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.portfolio-card__availability {
+  margin-top: 24px;
+  padding: 14px 16px;
+  border-left: 3px solid var(--accent);
+  color: rgba(var(--text-rgb), 0.68);
+  background: var(--bg-light);
+  font-size: 0.8rem;
+}
+
 .fade-in--visible .portfolio-card__capacity-track span {
   transform: scaleX(1);
 }
@@ -1647,6 +1663,12 @@ h2 {
   margin-bottom: 38px;
   font-size: clamp(1.8rem, 3vw, 2.6rem);
   letter-spacing: -0.035em;
+}
+
+.category-detail__intro {
+  margin: -20px 0 34px;
+  color: rgba(var(--text-rgb), 0.74);
+  line-height: 1.75;
 }
 
 .category-detail__group + .category-detail__group {

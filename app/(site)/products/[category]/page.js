@@ -17,7 +17,7 @@ export async function generateMetadata({ params }) {
 
   return {
     title: product.name,
-    description: `${product.name} product offerings, fabric constructions, and monthly production capacity from Cottonrose.`,
+    description: `${product.name} product offerings, material constructions, and sourcing support from CottonRose.`,
   };
 }
 
@@ -28,24 +28,21 @@ export default async function ProductCategoryPage({ params }) {
 
   return (
     <>
-      <PageHero title={product.name} crumb={`Product Categories / ${product.name}`} image={product.image} />
+      <PageHero title={product.name} crumb={`Products / ${product.name}`} image={product.image} />
       <section className="section category-detail">
         <div className="container">
-          <FadeIn as={Link} href="/products" className="category-detail__back">← All Product Categories</FadeIn>
+          <FadeIn as={Link} href="/products" className="category-detail__back">← All Product Offerings</FadeIn>
 
           <div className="category-detail__layout">
             <FadeIn className="category-detail__visual">
               <Image src={product.image} alt={product.alt} fill sizes="(max-width: 768px) 100vw, 48vw" priority />
-              <div className="category-detail__capacity">
-                <span>Monthly capacity</span>
-                <strong>{product.capacityLabel}</strong>
-                <small>Pcs / month</small>
-              </div>
+              <div className="category-detail__capacity"><span>CottonRose sourcing offering</span><strong>{product.name}</strong><small>Availability confirmed per buyer brief</small></div>
             </FadeIn>
 
             <FadeIn className="category-detail__content">
-              <span className="section-label">Product portfolio & technical specifications</span>
-              <h2>{product.name} manufacturing capability</h2>
+              <span className="section-label">Product and material scope</span>
+              <h2>{product.name} sourcing support</h2>
+              <p className="category-detail__intro">{product.summary}</p>
 
               <div className="category-detail__group">
                 <h3><span aria-hidden="true">+</span> Product Offering</h3>
@@ -56,6 +53,7 @@ export default async function ProductCategoryPage({ params }) {
                 <h3><span aria-hidden="true">◇</span> Fabric Construction</h3>
                 <ul>{product.fabrics.map((item) => <li key={item}>{item}</li>)}</ul>
               </div>
+              <div className="category-detail__group"><h3><span aria-hidden="true">✓</span> Coordination Options</h3><ul>{product.options.map((item) => <li key={item}>{item}</li>)}</ul></div>
             </FadeIn>
           </div>
 
@@ -68,7 +66,7 @@ export default async function ProductCategoryPage({ params }) {
           </FadeIn>
         </div>
       </section>
-      <CtaBanner title={`Source ${product.name} with Cottonrose`} text="Send us your tech pack or reference image and we'll quote within days." />
+      <CtaBanner title={`Source ${product.name} with CottonRose`} text="Send your tech pack, quantity, material requirement, destination, and delivery target for order-specific review." />
     </>
   );
 }
