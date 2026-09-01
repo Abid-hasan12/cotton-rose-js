@@ -1,0 +1,8 @@
+import PageHero from "@/components/PageHero";
+import { company } from "@/data/company";
+
+export const metadata = { title: "Privacy Notice", description: `How ${company.name} handles website inquiry information.` };
+
+export default function PrivacyPage() {
+  return <><PageHero title="Privacy Notice" crumb="Privacy" image="/images/banner2.png" /><section className="section"><article className="container legal-copy"><p className="legal-copy__updated">Last reviewed: 1 September 2026</p><h2>Website inquiries</h2><p>When you submit the inquiry form, CottonRose receives the contact and sourcing information you provide so the team can review and respond to your request.</p><h2>Information used</h2><p>This may include your name, business email, phone number, product interest, quantity, destination, delivery target, and the details included in your message. Please do not submit confidential designs, passwords, bank information, or sensitive personal data through the website form.</p><h2>Purpose and retention</h2><p>Inquiry information is used for business communication, sourcing assessment, follow-up, and appropriate record keeping. It should be retained only for as long as needed for those purposes and applicable legal obligations.</p><h2>Sharing and security</h2><p>Information may be handled by approved service providers used to deliver website messages. CottonRose should apply reasonable access controls and must not sell inquiry data.</p><h2>Your choices</h2><p>To ask about, correct, or request deletion of inquiry information, email <a href={`mailto:${company.contact.email}`}>{company.contact.email}</a>. Legal requirements may require limited records to be retained.</p></article></section></>;
+}

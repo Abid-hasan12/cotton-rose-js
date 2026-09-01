@@ -18,6 +18,7 @@ export default function SiteFooter() {
               <li><Link href="/services">Services</Link></li>
               <li><Link href="/quality-compliance">Quality &amp; Compliance</Link></li>
               <li><Link href="/contact">Contact</Link></li>
+              <li><Link href="/privacy">Privacy Notice</Link></li>
             </ul>
           </div>
           <div className="footer__col">

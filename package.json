@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "check:content": "node scripts/content-check.mjs",
+    "test:site": "npm run check:content && npm run build"
   },
   "engines": {
     "node": ">=18.18.0"
