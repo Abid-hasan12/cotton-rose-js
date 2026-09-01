@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function ProductsPage() {
   return <>
-    <PageHero title="Product Offering" crumb="Products" image="https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=1800&q=80" />
+    <PageHero title="Product Offering" crumb="Products" image="/images/banner2.png" />
     <section className="section products-portfolio"><div className="container">
       <FadeIn className="section__head products-portfolio__head"><span className="section-label">Buyer-focused sourcing portfolio</span><h2>Products we can source and manage</h2><p>Explore CottonRose product categories, common material constructions, and development options. Final feasibility is confirmed privately against your tech pack, quantity, compliance needs, target price, and delivery date.</p></FadeIn>
       <ProductCatalogue />

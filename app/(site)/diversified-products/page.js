@@ -11,7 +11,7 @@ export const metadata = {
 export default function DiversifiedProductsPage() {
   return (
     <>
-      <PageHero title="Diversified Product Lines" crumb="Diversified Product Lines" image="https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=1800&q=80" />
+      <PageHero title="Diversified Product Lines" crumb="Diversified Product Lines" image="/images/banner2.png" />
       <section className="bg-brand-mist py-16 md:py-24">
         <div className="container">
           <FadeIn className="section__head">
