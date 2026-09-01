@@ -5,7 +5,7 @@ import CtaBanner from "@/components/CtaBanner";
 
 export const metadata = {
   title: "Diversified Product Lines",
-  description: "Explore Cottonrose's diversified apparel sourcing lines across swimwear, shirts, activewear, woven bottoms, denim, sweaters, and outerwear.",
+  description: "Explore CottonRose diversified apparel sourcing lines across swimwear, shirts, activewear, woven bottoms, denim, sweaters, and outerwear.",
 };
 
 export default function DiversifiedProductsPage() {
@@ -22,7 +22,7 @@ export default function DiversifiedProductsPage() {
           <FadeIn><DiversifiedProductCatalogue /></FadeIn>
         </div>
       </section>
-      <CtaBanner title="Have a Product in Mind?" text="Send us your tech pack or reference image and we'll quote within days." />
+      <CtaBanner title="Have a Product in Mind?" text="Send your tech pack or reference image for an order-specific sourcing review." />
     </>
   );
 }

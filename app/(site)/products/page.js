@@ -4,17 +4,17 @@ import ProductCatalogue from "@/components/ProductCatalogue";
 import CtaBanner from "@/components/CtaBanner";
 
 export const metadata = {
-  title: "Product Categories",
-  description: "Explore Cottonrose's manufacturing capabilities across Knitwear, Woven Wear, Sweaters, and Activewear."
+  title: "Product Offering",
+  description: "Explore CottonRose sourcing offerings across knitwear, woven wear, sweaters, activewear, and diversified apparel lines."
 };
 
 export default function ProductsPage() {
   return <>
-    <PageHero title="Product Categories" crumb="Product Categories" image="https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=1800&q=80" />
+    <PageHero title="Product Offering" crumb="Products" image="https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=1800&q=80" />
     <section className="section products-portfolio"><div className="container">
-      <FadeIn className="section__head products-portfolio__head"><span className="section-label">Product portfolio & technical specifications</span><h2>Full-spectrum manufacturing capabilities</h2><p>Our network of fully audited state-of-the-art partner factories enables us to manufacture a diverse range of high-quality readymade garments (RMG) for Men, Women, Kids, and Workwear.</p></FadeIn>
+      <FadeIn className="section__head products-portfolio__head"><span className="section-label">Buyer-focused sourcing portfolio</span><h2>Products we can source and manage</h2><p>Explore CottonRose product categories, common material constructions, and development options. Final feasibility is confirmed privately against your tech pack, quantity, compliance needs, target price, and delivery date.</p></FadeIn>
       <ProductCatalogue />
     </div></section>
-    <CtaBanner title="Have a Product in Mind?" text="Send us your tech pack or reference image and we'll quote within days." />
+    <CtaBanner title="Have a Product in Mind?" text="Send your tech pack or reference image and we will confirm the information needed for a sourcing proposal." />
   </>;
 }
