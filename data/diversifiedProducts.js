@@ -1,5 +1,12 @@
+const placeholderImages = [
+  "/images/product-placeholder-1.svg",
+  "/images/product-placeholder-2.svg",
+  "/images/product-placeholder-3.svg",
+  "/images/product-placeholder-4.svg",
+];
+
 const makeGallery = (name, images) => images.map((unused, index) => ({
-  src: `/images/product-placeholder-${index + 1}.svg`,
+  src: placeholderImages[index],
   alt: `${name} approved sample photography placeholder ${index + 1}`,
 }));
 
