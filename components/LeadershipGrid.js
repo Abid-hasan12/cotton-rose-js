@@ -14,6 +14,18 @@ export default function LeadershipGrid() {
     if (activeLeader && dialog && !dialog.open) dialog.showModal();
   }, [activeLeader]);
 
+  useEffect(() => {
+    if (!activeLeader) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        dialogRef.current?.close();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [activeLeader]);
+
   const openProfile = (leader, trigger) => {
     triggerRef.current = trigger;
     setActiveLeader(leader);
