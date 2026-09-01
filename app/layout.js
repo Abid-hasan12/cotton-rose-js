@@ -1,5 +1,4 @@
 import "@/css/style.css";
-import "./profile.css";
 import { company, companyAddress } from "@/data/company";
 
 export const metadata = {
