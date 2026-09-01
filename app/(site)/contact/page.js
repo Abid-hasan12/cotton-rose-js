@@ -1,27 +1,32 @@
 import PageHero from "@/components/PageHero";
 import FadeIn from "@/components/FadeIn";
 import ContactForm from "@/components/ContactForm";
+import { company, companyAddress } from "@/data/company";
 
 export const metadata = {
   title: "Contact Us",
-  description: "Get in touch with Cottonrose for apparel sourcing inquiries, quotes, and factory partnership requests."
+  description: "Contact CottonRose for apparel sourcing, product development, quality-assurance, and order-management inquiries.",
 };
 
 export default function ContactPage() {
+  const mapQuery = encodeURIComponent(companyAddress);
   return <>
-    <PageHero title="Contact Cottonrose" crumb="Contact" image="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&w=1800&q=80" />
-    <section className="section"><div className="container contact-grid">
-      <FadeIn><span className="section-label">Get In Touch</span><h2>Our Office</h2>
-        <div className="contact-info__item"><h4>Address</h4><p> House No. 45, Road No. 4, Sector No. 11, Uttara Model Town, Uttara, Dhaka-1330, Bangladesh.</p></div>
-        <div className="contact-info__item"><h4>Phone</h4><a href="tel:+8801976694113">+880 1976694113</a></div>
-        <div className="contact-info__item"><h4>Telephone</h4><a href="tel:+8802224471434">+880 2224471434</a></div>
-        <div className="contact-info__item"><h4>Email</h4><a href="mailto:support@cottonrosebd.com">support@cottonrosebd.com</a></div>
-        <div className="contact-info__item"><h4>Office Hours</h4><p>Sunday – Thursday, 9:00 AM – 6:00 PM (GMT+6)</p></div>
-        <div className="contact-info__item"><h4>WhatsApp</h4><a className="whatsapp-link" href="https://wa.me/8801976694113" target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a></div>
-        <div className="contact-info__item"><h4>Follow Us</h4><div className="social-row"><a href="#" aria-label="LinkedIn">in</a><a href="#" aria-label="Facebook">f</a><a href="#" aria-label="Instagram">ig</a></div></div>
-        <div className="contact-info__item"><h4>Find Us</h4><iframe className="contact-info__map" src="https://www.google.com/maps?q=Uttara,Dhaka,Bangladesh&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Cottonrose office location map" /></div>
-      </FadeIn>
-      <ContactForm />
+    <PageHero title="Contact CottonRose" crumb="Contact" image="/images/banner2.png" />
+    <section className="section"><div className="container">
+      <div className="contact-grid">
+        <FadeIn className="contact-panel"><span className="section-label">Get in touch</span><h2>Dhaka Office</h2><p className="contact-panel__intro">Share your buyer brief, product category, target quantity, destination, and required delivery date. Our team will review the request before confirming the next step.</p>
+          <address>
+            <div className="contact-info__item"><h3>Address</h3><p>{companyAddress}</p></div>
+            <div className="contact-info__item"><h3>Mobile</h3><a href={`tel:${company.contact.mobileHref}`}>{company.contact.mobileDisplay}</a></div>
+            <div className="contact-info__item"><h3>Land phone</h3><a href={`tel:${company.contact.landHref}`}>{company.contact.landDisplay}</a></div>
+            <div className="contact-info__item"><h3>Email</h3><a href={`mailto:${company.contact.email}`}>{company.contact.email}</a></div>
+            <div className="contact-info__item"><h3>Office hours</h3><p>{company.officeHours}</p></div>
+          </address>
+          <a className="btn btn--gold" href={company.contact.whatsapp} target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a>
+        </FadeIn>
+        <ContactForm />
+      </div>
+      <FadeIn className="contact-map-block"><div><span className="section-label">Directions</span><h2>Find CottonRose</h2><a href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`} target="_blank" rel="noreferrer">Open directions in Google Maps →</a></div><iframe className="contact-info__map" src={`https://www.google.com/maps?q=${mapQuery}&output=embed`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="CottonRose office location map" /></FadeIn>
     </div></section>
   </>;
 }

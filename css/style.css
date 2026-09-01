@@ -2556,3 +2556,169 @@ h2 {
   .process { grid-template-columns: 1fr; }
   .leadership-modal__actions .btn { width: 100%; text-align: center; }
 }
+
+/* Services, quality, compliance, and inquiry flow */
+.service-block__deliverable {
+  margin-top: 22px;
+  padding: 14px 16px;
+  border-left: 3px solid var(--accent);
+  background: var(--bg-light);
+  font-size: 0.85rem;
+}
+
+.quality-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.quality-card,
+.due-diligence-card {
+  padding: 28px 24px;
+  border: 1px solid rgba(var(--primary-rgb), 0.09);
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow: 0 10px 30px rgba(var(--primary-rgb), 0.07);
+}
+
+.quality-card > span {
+  color: var(--accent);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.quality-card h3,
+.due-diligence-card h3 {
+  margin: 14px 0 9px;
+  font-size: 1rem;
+}
+
+.quality-card p,
+.due-diligence-card p {
+  color: rgba(var(--text-rgb), 0.72);
+  font-size: 0.86rem;
+}
+
+.due-diligence-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.compliance-note {
+  margin-top: 28px;
+  padding: 24px;
+  border-radius: 12px;
+  color: var(--white);
+  background: var(--primary);
+}
+
+.compliance-note strong {
+  color: var(--accent);
+}
+
+.compliance-note p {
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.contact-panel {
+  padding: 36px;
+  border: 1px solid rgba(var(--primary-rgb), 0.08);
+  border-radius: 12px;
+  background: var(--bg-light);
+}
+
+.contact-panel__intro {
+  margin: 12px 0 28px;
+  color: rgba(var(--text-rgb), 0.72);
+}
+
+.contact-panel address {
+  font-style: normal;
+}
+
+.contact-info__item h3 {
+  margin-bottom: 5px;
+  font-size: 0.86rem;
+}
+
+.contact-map-block {
+  display: grid;
+  grid-template-columns: 0.65fr 1.35fr;
+  gap: 30px;
+  align-items: center;
+  margin-top: 42px;
+  padding-top: 42px;
+  border-top: 1px solid rgba(var(--primary-rgb), 0.09);
+}
+
+.contact-map-block a {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--primary);
+  font-weight: 800;
+}
+
+.contact-map-block .contact-info__map {
+  height: 360px;
+}
+
+.form__status {
+  display: none;
+  margin-bottom: 20px;
+  padding: 13px 15px;
+  border-radius: 7px;
+  font-size: 0.86rem;
+}
+
+.form__status--loading,
+.form__status--success,
+.form__status--error {
+  display: block;
+}
+
+.form__status--loading { background: var(--bg-light); }
+.form__status--success { border: 1px solid #2f7d4b; color: #245f3a; background: #edf8f1; }
+.form__status--error { border: 1px solid #ad3535; color: #852828; background: #fff1f1; }
+
+.form__honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.form__check {
+  display: flex !important;
+  gap: 10px;
+  align-items: flex-start;
+  font-weight: 400 !important;
+}
+
+.form__check input {
+  width: auto !important;
+  margin-top: 4px;
+}
+
+.form__check a {
+  color: var(--primary);
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.form button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+@media (max-width: 1050px) {
+  .quality-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+  .quality-grid, .due-diligence-grid, .contact-map-block { grid-template-columns: 1fr; }
+  .contact-panel { padding: 26px 22px; }
+}
