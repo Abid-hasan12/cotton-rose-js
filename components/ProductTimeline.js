@@ -49,12 +49,25 @@ export default function ProductTimeline() {
                 className="product-range__step"
                 key={milestone.id}
                 style={{
-                  "--range-x": `${11 + (index * 8.9)}%`,
+                  "--range-x": `${11 + (index * 8.625)}%`,
                   "--range-y": `${17 + (index * 7.9)}%`,
                 }}
               >
-                <span className="product-range__marker" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-                <span className="product-range__name">{milestone.title}</span>
+                <button
+                  className="product-range__trigger"
+                  type="button"
+                  aria-describedby={`product-range-${milestone.id}-description`}
+                >
+                  <span className="product-range__marker" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="product-range__name">{milestone.title}</span>
+                </button>
+                <span
+                  className="product-range__description"
+                  id={`product-range-${milestone.id}-description`}
+                  role="tooltip"
+                >
+                  {milestone.description}
+                </span>
               </li>
             ))}
           </ol>

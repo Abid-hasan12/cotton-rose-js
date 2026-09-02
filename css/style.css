@@ -1961,15 +1961,31 @@ h2 {
   position: absolute;
   left: var(--range-x);
   bottom: var(--range-y);
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
   transform: translateY(50%);
 }
 
-.product-range__step:nth-last-child(-n + 2) {
-  flex-direction: row-reverse;
-  transform: translate(-100%, 50%);
+.product-range__step:hover,
+.product-range__step:focus-within {
+  z-index: 8;
+}
+
+.product-range__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: help;
+}
+
+.product-range__trigger:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
 
 .product-range__marker {
@@ -1991,13 +2007,47 @@ h2 {
 .product-range__name {
   display: block;
   width: max-content;
-  max-width: 255px;
+  max-width: 165px;
   padding: 6px 9px;
   color: var(--primary);
   background: rgba(251, 252, 254, 0.94);
   font-size: clamp(0.74rem, 1vw, 0.9rem);
   font-weight: 800;
   line-height: 1.35;
+}
+
+.product-range__description {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 42px;
+  z-index: 12;
+  width: 270px;
+  padding: 13px 15px;
+  border: 1px solid rgba(var(--primary-rgb), 0.11);
+  border-radius: 7px;
+  color: rgba(var(--primary-rgb), 0.76);
+  background: var(--white);
+  box-shadow: 0 14px 30px rgba(var(--primary-rgb), 0.14);
+  font-size: 0.73rem;
+  font-weight: 500;
+  line-height: 1.55;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-5px);
+  transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
+}
+
+.product-range__step:nth-last-child(-n + 3) .product-range__description {
+  right: 0;
+  left: auto;
+}
+
+.product-range__step:hover .product-range__description,
+.product-range__step:focus-within .product-range__description {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .product-range__note {
@@ -2750,14 +2800,17 @@ h2 {
     gap: 12px;
   }
 
-  .product-range__step,
-  .product-range__step:nth-last-child(-n + 2) {
+  .product-range__step {
     position: static;
+    display: block;
+    transform: none;
+  }
+
+  .product-range__trigger {
     display: grid;
     grid-template-columns: 38px minmax(0, 1fr);
     gap: 12px;
-    align-items: center;
-    transform: none;
+    width: 100%;
   }
 
   .product-range__marker {
@@ -2772,6 +2825,35 @@ h2 {
     max-width: none;
     padding: 10px 12px;
     font-size: 0.84rem;
+  }
+
+  .product-range__description,
+  .product-range__step:nth-last-child(-n + 3) .product-range__description {
+    position: static;
+    display: block;
+    width: auto;
+    max-height: 0;
+    margin: 0 0 0 50px;
+    padding: 0 12px;
+    overflow: hidden;
+    border-color: transparent;
+    background: rgba(var(--primary-rgb), 0.035);
+    box-shadow: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: none;
+    transition: max-height 200ms ease, margin 200ms ease, padding 200ms ease, opacity 160ms ease, visibility 160ms ease;
+  }
+
+  .product-range__step:hover .product-range__description,
+  .product-range__step:focus-within .product-range__description {
+    max-height: 120px;
+    margin-top: 6px;
+    margin-bottom: 5px;
+    padding: 10px 12px;
+    border-color: rgba(var(--primary-rgb), 0.08);
+    opacity: 1;
+    visibility: visible;
   }
 
   .product-range__note {

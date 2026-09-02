@@ -240,6 +240,7 @@ Implementation status:
 - The responsive 2012–2026 range-evolution component is implemented for client review.
 - The presentation follows the reference's upward progression while using CottonRose's navy-and-gold design system and accessible web semantics.
 - Product groups appear in the supplied order without unsupported intermediate dates.
+- Product names stay on one consistent side of the progression line, with short sourcing descriptions available on hover, keyboard focus, and mobile focus/tap.
 - Timeline wording must continue to describe CottonRose as the buyer-supplier coordination bridge, not as a manufacturer.
 
 ### Core product data from the CottonRose profile
