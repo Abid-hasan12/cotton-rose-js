@@ -27,7 +27,6 @@ export default function HomePage() {
         <div className="hero__glow hero__glow--two" aria-hidden="true" />
         <div className="container hero__grid">
           <div className="hero__content">
-            <span className="hero__eyebrow"><i aria-hidden="true" />Independent apparel buying house · Dhaka, Bangladesh</span>
             <h1 className="hero__title" id="home-hero-title">From buyer brief to shipment, <span>one accountable sourcing partner.</span></h1>
             <p className="hero__tagline">CottonRose represents international buyers across product development, order-specific sourcing, quality coordination, commercial follow-up, and shipment handover.</p>
             <div className="hero__actions"><Link href="/contact" className="btn btn--gold">Discuss Your Requirement <span aria-hidden="true">→</span></Link><Link href="/products" className="btn btn--outline">Explore Product Offering</Link></div>
