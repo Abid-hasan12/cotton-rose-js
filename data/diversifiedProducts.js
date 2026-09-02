@@ -1,14 +1,28 @@
-const placeholderImages = [
-  "/images/product-placeholder-1.svg",
-  "/images/product-placeholder-2.svg",
-  "/images/product-placeholder-3.svg",
-  "/images/product-placeholder-4.svg",
-];
+const imageLibrary = {
+  knitwear: { src: "/images/products/knitwear.jpg", alt: "Plain cotton T-shirt representing knitwear sourcing" },
+  woven: { src: "/images/products/woven-shirts.jpg", alt: "Formal woven shirts arranged on hangers" },
+  sweaters: { src: "/images/products/sweaters.jpg", alt: "Folded sweaters showing knitted textures" },
+  activewear: { src: "/images/products/activewear.jpg", alt: "Coordinated performance activewear set" },
+  denim: { src: "/images/products/denim.jpg", alt: "Stacked denim textiles in varied indigo shades" },
+  outerwear: { src: "/images/products/outerwear.jpg", alt: "Utility-inspired outerwear jacket" },
+  swimwear: { src: "/images/products/swimwear.jpg", alt: "One-piece swimwear illustrating the swim category" },
+  workwear: { src: "/images/products/workwear.jpg", alt: "High-visibility workwear in an industrial setting" },
+  range: { src: "/images/products/product-range.jpg", alt: "Coordinated apparel range on a clothing rail" },
+};
 
-const makeGallery = (name, images) => images.map((unused, index) => ({
-  src: placeholderImages[index],
-  alt: `${name} approved sample photography placeholder ${index + 1}`,
-}));
+const galleryByGroup = {
+  Knit: ["knitwear", "sweaters", "range", "activewear"],
+  Woven: ["woven", "outerwear", "denim", "range"],
+  Outerwear: ["outerwear", "workwear", "range", "woven"],
+  Denim: ["denim", "woven", "outerwear", "range"],
+};
+
+const makeGallery = (id, group) => {
+  const keys = id === "swimwear-board-shorts"
+    ? ["swimwear", "activewear", "range", "knitwear"]
+    : galleryByGroup[group];
+  return keys.map((key) => imageLibrary[key]);
+};
 
 export const diversifiedProductGroups = ["All", "Knit", "Woven", "Outerwear", "Denim"];
 
@@ -29,9 +43,9 @@ const catalogue = [
   ["workwear-outerwear", "Workwear / Outerwear", "Workwear", "Outerwear", "Purpose-built workwear focused on protection, mobility, durability, and brand visibility.", ["Heavy cotton twill", "Ripstop", "High-visibility fabric", "Water-resistant canvas"], ["1578681994506-b8f463449011", "1544022613-e87ca75a784a", "1551028719-00167b16eac5", "1591047139829-d91aecb6caea"]],
 ];
 
-export const diversifiedProducts = catalogue.map(([id, catalogueName, shortName, group, summary, materials, images], index) => {
+export const diversifiedProducts = catalogue.map(([id, catalogueName, shortName, group, summary, materials], index) => {
   const name = catalogueName;
-  const gallery = makeGallery(name, images);
+  const gallery = makeGallery(id, group);
   return { id, name, shortName, group, summary, materials, gallery, image: gallery[0].src, alt: gallery[0].alt, catalogueIndex: index + 1 };
 });
 
