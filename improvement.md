@@ -231,6 +231,17 @@ Adapt the useful concept from the demo portfolio into a modern CottonRose-owned 
 6. **Product inquiry CTA**
    - Invite the buyer to send a tech pack, reference image, target quantity, material requirement, target price, destination market, and required delivery date.
 
+### Product Offering history timeline
+
+Add a formal chronological timeline before the detailed product catalogue. It should show CottonRose's founding year and the year each new product group joined the sourcing portfolio. The supplied CottonRose profile states `12+ years` of experience and confirms the current product range, but it does not provide a founding year, product-addition years, or an approved category sequence. These facts must not be inferred.
+
+Implementation status:
+
+- The responsive timeline component and proposed category grouping are implemented for client review.
+- Every date is deliberately labelled `Year to confirm` and `Pending verification`.
+- Replace the pending labels only after the client supplies the founding year and each approved product-expansion milestone.
+- Timeline wording must continue to describe CottonRose as the buyer-supplier coordination bridge, not as a manufacturer.
+
 ### Core product data from the CottonRose profile
 
 #### Knitwear
