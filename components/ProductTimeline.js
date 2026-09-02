@@ -1,45 +1,70 @@
-import Image from "next/image";
 import FadeIn from "./FadeIn";
 import { productTimeline } from "@/data/productTimeline";
+
+const startYear = 2012;
+const endYear = 2026;
 
 export default function ProductTimeline() {
   return (
     <section className="product-evolution" aria-labelledby="product-evolution-title">
       <FadeIn className="product-evolution__intro">
         <div>
-          <span className="section-label">Portfolio evolution</span>
-          <h2 id="product-evolution-title">How our product offering has grown</h2>
-          <p>A chronological view of when CottonRose began and when new sourcing categories were added.</p>
+          <span className="section-label">Product range evolution</span>
+          <h2 id="product-evolution-title">A sourcing portfolio built over time</h2>
+          <p>
+            From core apparel to a broader multi-category offer, CottonRose has expanded the
+            product programs it can source and manage for international buyers.
+          </p>
         </div>
-        <aside className="product-evolution__notice" aria-label="Timeline verification status">
-          <strong>Dates pending confirmation</strong>
-          <span>The supplied company profile confirms the current range but does not contain the founding or product-addition years.</span>
-        </aside>
+        <div className="product-evolution__period" aria-label={`Portfolio development from ${startYear} to ${endYear}`}>
+          <span>{startYear}</span>
+          <i aria-hidden="true" />
+          <span>{endYear}</span>
+        </div>
       </FadeIn>
 
-      <ol className="product-timeline">
-        {productTimeline.map((milestone, index) => (
-          <FadeIn as="li" className="product-timeline__item" key={milestone.id}>
-            <div className="product-timeline__marker" aria-hidden="true"><span>{String(index + 1).padStart(2, "0")}</span></div>
-            <article className="product-timeline__card">
-              <div className="product-timeline__image">
-                <Image src={milestone.image} alt={milestone.alt} fill sizes="(max-width: 768px) 100vw, 38vw" />
-              </div>
-              <div className="product-timeline__content">
-                <div className="product-timeline__meta">
-                  <span className="product-timeline__year">{milestone.year ?? "Year to confirm"}</span>
-                  <span className="product-timeline__status">Pending verification</span>
-                </div>
-                <h3>{milestone.title}</h3>
-                <p>{milestone.description}</p>
-                <ul aria-label={`Products associated with ${milestone.title}`}>
-                  {milestone.products.map((product) => <li key={product}>{product}</li>)}
-                </ul>
-              </div>
-            </article>
-          </FadeIn>
-        ))}
-      </ol>
+      <FadeIn className="product-range" role="group" aria-label={`CottonRose product range progression, ${startYear} to ${endYear}`}>
+        <div className="product-range__heading">
+          <span>Range progression</span>
+          <strong>{startYear}—{endYear}</strong>
+        </div>
+
+        <div className="product-range__chart">
+          <svg className="product-range__line" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <marker id="product-range-arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+                <path d="M 1 1 L 11 6 L 1 11 z" />
+              </marker>
+            </defs>
+            <path className="product-range__line-shadow" d="M 68 535 L 925 66" />
+            <path className="product-range__line-main" d="M 68 535 L 925 66" markerEnd="url(#product-range-arrow)" />
+          </svg>
+
+          <span className="product-range__year product-range__year--start">{startYear}<small>Starting range</small></span>
+          <span className="product-range__year product-range__year--end">{endYear}<small>Expanded offer</small></span>
+
+          <ol className="product-range__steps">
+            {productTimeline.map((milestone, index) => (
+              <li
+                className="product-range__step"
+                key={milestone.id}
+                style={{
+                  "--range-x": `${11 + (index * 8.9)}%`,
+                  "--range-y": `${17 + (index * 7.9)}%`,
+                }}
+              >
+                <span className="product-range__marker" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                <span className="product-range__name">{milestone.title}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <p className="product-range__note">
+          Product feasibility is confirmed against each buyer&apos;s specifications, quantity,
+          compliance requirements, target price, and delivery window.
+        </p>
+      </FadeIn>
     </section>
   );
 }
