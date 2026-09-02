@@ -2005,15 +2005,22 @@ h2 {
 }
 
 .product-range__name {
+  position: relative;
+  z-index: 2;
   display: block;
   width: max-content;
   max-width: 165px;
   padding: 6px 9px;
   color: var(--primary);
-  background: rgba(251, 252, 254, 0.94);
+  background: transparent;
   font-size: clamp(0.74rem, 1vw, 0.9rem);
   font-weight: 800;
   line-height: 1.35;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.96),
+    1px 0 0 rgba(255, 255, 255, 0.96),
+    0 -1px 0 rgba(255, 255, 255, 0.96),
+    -1px 0 0 rgba(255, 255, 255, 0.96);
 }
 
 .product-range__description {
