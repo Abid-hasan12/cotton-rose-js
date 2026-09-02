@@ -17,10 +17,29 @@ const galleryByGroup = {
   Denim: ["denim", "woven", "outerwear", "range"],
 };
 
+const primaryImageByProduct = {
+  "swimwear-board-shorts": "swimwear",
+  "t-shirts": "knitwear",
+  "sportswear-activewear": "activewear",
+  "woven-mens-bottoms": "woven",
+  "woven-kids-bottoms": "woven",
+  "fleece-jackets": "outerwear",
+  outerwear: "outerwear",
+  "denim-kids": "denim",
+  "mens-ladies-shirts": "woven",
+  "denim-long-pants": "denim",
+  sweaters: "sweaters",
+  "polo-shirts": "knitwear",
+  "dress-shirts": "woven",
+  "workwear-outerwear": "workwear",
+};
+
 const makeGallery = (id, group) => {
-  const keys = id === "swimwear-board-shorts"
-    ? ["swimwear", "activewear", "range", "knitwear"]
+  const primary = primaryImageByProduct[id];
+  const supporting = id === "swimwear-board-shorts"
+    ? ["activewear", "range", "knitwear"]
     : galleryByGroup[group];
+  const keys = [primary, ...supporting.filter((key) => key !== primary)].slice(0, 4);
   return keys.map((key) => imageLibrary[key]);
 };
 
