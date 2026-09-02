@@ -4,7 +4,6 @@ import FadeIn from "@/components/FadeIn";
 import CtaBanner from "@/components/CtaBanner";
 import SourcingProcess from "@/components/SourcingProcess";
 import { products } from "@/data/products";
-import { company } from "@/data/company";
 
 const proofPoints = [
   ["Buyer Representation", "One accountable CottonRose contact coordinates the brief, decisions, milestones, and follow-up."],
@@ -23,12 +22,41 @@ const features = [
 export default function HomePage() {
   return (
     <>
-      <section className="hero" style={{ backgroundImage: "url('/images/banner2.png')" }}>
-        <div className="container hero__content">
-          <span className="hero__eyebrow">{company.tagline} | Bangladesh</span>
-          <h1 className="hero__title">Your sourcing team between the buyer brief and final shipment</h1>
-          <p className="hero__tagline">CottonRose is a Dhaka-based apparel buying house representing international buyers through product development, sourcing, quality assurance, order management, and shipment coordination.</p>
-          <div className="hero__actions"><Link href="/contact" className="btn btn--gold">Start an Inquiry</Link><Link href="/products" className="btn btn--outline">View Product Offering</Link></div>
+      <section className="hero" aria-labelledby="home-hero-title">
+        <div className="hero__glow hero__glow--one" aria-hidden="true" />
+        <div className="hero__glow hero__glow--two" aria-hidden="true" />
+        <div className="container hero__grid">
+          <div className="hero__content">
+            <span className="hero__eyebrow"><i aria-hidden="true" />Independent apparel buying house · Dhaka, Bangladesh</span>
+            <h1 className="hero__title" id="home-hero-title">From buyer brief to shipment, <span>one accountable sourcing partner.</span></h1>
+            <p className="hero__tagline">CottonRose represents international buyers across product development, order-specific sourcing, quality coordination, commercial follow-up, and shipment handover.</p>
+            <div className="hero__actions"><Link href="/contact" className="btn btn--gold">Discuss Your Requirement <span aria-hidden="true">→</span></Link><Link href="/products" className="btn btn--outline">Explore Product Offering</Link></div>
+            <ul className="hero__assurances" aria-label="CottonRose service assurances">
+              <li><strong>Buyer-side</strong><span>Independent coordination</span></li>
+              <li><strong>Brief-led</strong><span>Order-specific sourcing</span></li>
+              <li><strong>Documented</strong><span>Quality and milestone follow-up</span></li>
+            </ul>
+          </div>
+
+          <div className="hero__visual" aria-label="CottonRose apparel sourcing portfolio">
+            <div className="hero__visual-main">
+              <Image src="/images/products/product-range.jpg" alt="Coordinated apparel range representing CottonRose sourcing" fill priority sizes="(max-width: 900px) 92vw, 44vw" />
+              <div className="hero__visual-caption"><span>Buyer-focused sourcing</span><strong>Products aligned to your brief</strong></div>
+            </div>
+            <div className="hero__visual-secondary">
+              <Image src="/images/products/woven-shirts.jpg" alt="Woven shirts illustrating CottonRose product sourcing" fill priority sizes="(max-width: 600px) 45vw, 17vw" />
+            </div>
+            <div className="hero__visual-note">
+              <span>Core scope</span>
+              <strong>Knitwear · Woven · Sweaters · Activewear</strong>
+            </div>
+            <div className="hero__journey" aria-label="CottonRose sourcing journey">
+              <span>Buyer brief</span><i aria-hidden="true" />
+              <span>Sourcing</span><i aria-hidden="true" />
+              <span>Quality</span><i aria-hidden="true" />
+              <span>Shipment</span>
+            </div>
+          </div>
         </div>
       </section>
 
