@@ -53,7 +53,7 @@ export default function ProductGallery({ images, categoryName }) {
             <Image src={item.src} alt={item.alt} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 58vw" className="object-cover transition duration-700 group-hover:scale-105" />
             <span className="absolute inset-0 bg-gradient-to-t from-brand-navy/70 via-transparent to-transparent opacity-70 transition-opacity group-hover:opacity-90" />
             <span className="absolute inset-x-0 bottom-0 flex items-end justify-between p-5 text-sm font-semibold text-white">
-              <span>{categoryName} · Sample {String(index + 1).padStart(2, "0")}</span>
+              <span>{categoryName} · Reference {String(index + 1).padStart(2, "0")}</span>
               <span className="grid h-9 w-9 place-items-center rounded-full bg-white/15 text-xl backdrop-blur-md transition-transform group-hover:scale-110" aria-hidden="true">↗</span>
             </span>
           </button>

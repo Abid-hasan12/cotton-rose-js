@@ -17,7 +17,7 @@ export default function DiversifiedProductsPage() {
           <FadeIn className="section__head">
             <span className="section-label">Extended product portfolio</span>
             <h2>Explore every product line</h2>
-            <p>Select a category to browse its sample gallery and key material capabilities.</p>
+            <p>Select a category to browse illustrative product references and common material capabilities.</p>
           </FadeIn>
           <FadeIn><DiversifiedProductCatalogue /></FadeIn>
         </div>

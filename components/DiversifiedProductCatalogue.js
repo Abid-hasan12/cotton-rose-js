@@ -40,7 +40,7 @@ export default function DiversifiedProductCatalogue() {
             <div className="absolute inset-x-0 bottom-0 p-6">
               <div className="mb-3 flex items-center justify-between text-xs font-bold uppercase tracking-[0.16em] text-brand-gold"><span>{product.group}</span><span>{String(product.catalogueIndex).padStart(2, "0")}</span></div>
               <h3 className="text-xl font-bold text-white">{product.name}</h3>
-              <div className="mt-3 flex items-center gap-2 text-sm font-semibold text-white/80 transition-colors group-hover:text-brand-gold">View sample gallery <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span></div>
+              <div className="mt-3 flex items-center gap-2 text-sm font-semibold text-white/80 transition-colors group-hover:text-brand-gold">View product references <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span></div>
             </div>
           </Link>
         ))}
