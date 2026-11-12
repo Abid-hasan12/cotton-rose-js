@@ -2,6 +2,8 @@ import { company } from "@/data/company";
 import { products } from "@/data/products";
 import { diversifiedProducts } from "@/data/diversifiedProducts";
 
+export const dynamic = "force-static";
+
 export default function sitemap() {
   const base = company.website.replace(/\/$/, "");
   const staticRoutes = ["", "/about", "/products", "/diversified-products", "/services", "/quality-compliance", "/contact", "/privacy"];
