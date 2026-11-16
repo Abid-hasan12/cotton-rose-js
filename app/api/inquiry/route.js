@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { query } from "@/lib/db";
 
 const attempts = new Map();
 const WINDOW_MS = 15 * 60 * 1000;
@@ -30,13 +31,30 @@ export async function POST(request) {
     return NextResponse.json({ message: "Please complete all required fields with valid information." }, { status: 400 });
   }
 
+  try {
+    await query(
+      "INSERT INTO inquiries (name, email, phone, product, message) VALUES (?, ?, ?, ?, ?)",
+      [fields.name, fields.email, fields.phone, fields.product, fields.message],
+    );
+  } catch (error) {
+    console.error("Could not save inquiry:", error);
+    return NextResponse.json({ message: "The inquiry could not be saved. Please try again later." }, { status: 500 });
+  }
+
+  const html = `<h1>New CottonRose sourcing inquiry</h1><p><strong>Name:</strong> ${escapeHtml(fields.name)}</p><p><strong>Email:</strong> ${escapeHtml(fields.email)}</p><p><strong>Phone:</strong> ${escapeHtml(fields.phone)}</p><p><strong>Product:</strong> ${escapeHtml(fields.product)}</p><p><strong>Quantity:</strong> ${escapeHtml(fields.quantity || "Not supplied")}</p><p><strong>Destination:</strong> ${escapeHtml(fields.destination || "Not supplied")}</p><p><strong>Delivery date:</strong> ${escapeHtml(fields.deliveryDate || "Not supplied")}</p><p><strong>Requirement:</strong></p><p>${escapeHtml(fields.message).replace(/\n/g, "<br>")}</p>`;
   const apiKey = process.env.RESEND_API_KEY;
   const recipient = process.env.CONTACT_RECIPIENT;
   const from = process.env.CONTACT_FROM_EMAIL;
-  if (!apiKey || !recipient || !from) return NextResponse.json({ message: "The online inquiry service is not configured yet." }, { status: 503 });
+  if (apiKey && recipient && from) {
+    try {
+      const response = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" }, body: JSON.stringify({ from, to: [recipient], reply_to: fields.email, subject: `CottonRose inquiry: ${fields.product}`, html }) });
+      if (!response.ok) console.error("Resend rejected inquiry notification:", response.status);
+    } catch (error) {
+      console.error("Could not send inquiry notification:", error);
+    }
+  } else {
+    console.warn("Inquiry saved without email notification because Resend is not configured.");
+  }
 
-  const html = `<h1>New CottonRose sourcing inquiry</h1><p><strong>Name:</strong> ${escapeHtml(fields.name)}</p><p><strong>Email:</strong> ${escapeHtml(fields.email)}</p><p><strong>Phone:</strong> ${escapeHtml(fields.phone)}</p><p><strong>Product:</strong> ${escapeHtml(fields.product)}</p><p><strong>Quantity:</strong> ${escapeHtml(fields.quantity || "Not supplied")}</p><p><strong>Destination:</strong> ${escapeHtml(fields.destination || "Not supplied")}</p><p><strong>Delivery date:</strong> ${escapeHtml(fields.deliveryDate || "Not supplied")}</p><p><strong>Requirement:</strong></p><p>${escapeHtml(fields.message).replace(/\n/g, "<br>")}</p>`;
-  const response = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" }, body: JSON.stringify({ from, to: [recipient], reply_to: fields.email, subject: `CottonRose inquiry: ${fields.product}`, html }) });
-  if (!response.ok) return NextResponse.json({ message: "The inquiry service could not confirm delivery." }, { status: 502 });
   return NextResponse.json({ delivered: true });
 }

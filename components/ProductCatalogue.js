@@ -1,83 +1,84 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import FadeIn from "./FadeIn";
-import { products } from "@/data/products";
+import { useEffect, useMemo, useState } from "react";
 
-function DetailList({ title, items, variant }) {
-  return (
-    <div className={`portfolio-card__detail portfolio-card__detail--${variant}`}>
-      <div className="portfolio-card__detail-heading">
-        <span className="portfolio-card__detail-icon" aria-hidden="true">{variant === "fabric" ? "◇" : "+"}</span>
-        <h4>{title}</h4>
-      </div>
-      <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul>
-    </div>
-  );
+function getProductName(product) {
+  return product.name || product.product_name || product.title || "Product";
+}
+
+function getProductCategory(product) {
+  return product.category || product.category_name || product.type || "Other";
 }
 
 export default function ProductCatalogue() {
-  const [activeId, setActiveId] = useState(products[0].id);
+  const [products, setProducts] = useState([]);
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const sections = products.map(({ id }) => document.getElementById(id)).filter(Boolean);
-    const observer = new IntersectionObserver((entries) => {
-      const visible = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (visible) setActiveId(visible.target.id);
-    }, { rootMargin: "-25% 0px -55%", threshold: [0.1, 0.3, 0.6] });
+    async function loadProducts() {
+      try {
+        const response = await fetch("/api/products");
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Could not load products.");
+        if (!Array.isArray(result)) throw new Error("The products response was invalid.");
+        setProducts(result);
+      } catch (loadError) {
+        setError(loadError.message);
+      }
+    }
 
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
+    loadProducts();
   }, []);
 
-  const jumpTo = (id) => {
-    setActiveId(id);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  const categories = useMemo(
+    () => ["All", ...new Set(products.map(getProductCategory))],
+    [products],
+  );
+  const visibleProducts = useMemo(
+    () => activeCategory === "All"
+      ? products
+      : products.filter((product) => getProductCategory(product) === activeCategory),
+    [activeCategory, products],
+  );
 
   return (
     <>
-      <FadeIn as="nav" className="portfolio-nav" aria-label="Product categories">
-        {products.map((product, index) => (
+      {error && <p className="portfolio-message" role="alert">{error}</p>}
+      {!error && products.length === 0 && <p className="portfolio-message">Loading products...</p>}
+      {products.length > 0 && <nav className="portfolio-nav" aria-label="Product categories">
+        {categories.map((category) => (
           <button
-            key={product.id}
-            className={`portfolio-nav__item${activeId === product.id ? " portfolio-nav__item--active" : ""}`}
-            onClick={() => jumpTo(product.id)}
-            aria-current={activeId === product.id ? "true" : undefined}
+            type="button"
+            key={category}
+            className={`portfolio-nav__item${activeCategory === category ? " portfolio-nav__item--active" : ""}`}
+            onClick={() => setActiveCategory(category)}
+            aria-pressed={activeCategory === category}
           >
-            <span>0{index + 1}</span>
-            {product.name}
+            {category}
           </button>
         ))}
-      </FadeIn>
+      </nav>}
 
-      <div className="portfolio-list">
-        {products.map((product, index) => (
-          <FadeIn as="article" id={product.id} className={`portfolio-card${index % 2 ? " portfolio-card--reverse" : ""}`} key={product.id}>
+      <div className="portfolio-list" aria-live="polite">
+        {visibleProducts.map((product, index) => (
+          <article className="portfolio-card" key={product.id || `${getProductName(product)}-${index}`}>
             <div className="portfolio-card__visual">
-              <Image src={product.image} alt={product.alt} fill sizes="(max-width: 768px) 100vw, 46vw" />
-              <span className="portfolio-card__index">0{index + 1}</span>
-              <div className="portfolio-card__image-title"><span>Category</span><h3>{product.name}</h3></div>
+              {(product.image || product.image_url) && <img src={product.image || product.image_url} alt={product.alt || getProductName(product)} />}
+              <span className="portfolio-card__index">{String(index + 1).padStart(2, "0")}</span>
+              <div className="portfolio-card__image-title"><span>{getProductCategory(product)}</span><h3>{getProductName(product)}</h3></div>
             </div>
 
             <div className="portfolio-card__content">
               <div className="portfolio-card__topline">
-                <span className="section-label">Sourcing offering</span>
-                <span className="portfolio-card__count">0{index + 1} / 04</span>
+                <span className="section-label">{getProductCategory(product)}</span>
               </div>
-              <p className="portfolio-card__summary">{product.summary}</p>
-              <div className="portfolio-card__details">
-                <DetailList title="Product Offering" items={product.offerings} variant="offering" />
-                <DetailList title="Fabric Construction" items={product.fabrics} variant="fabric" />
-              </div>
-              <p className="portfolio-card__availability">Order feasibility, supplier selection, minimum quantity, and lead time are confirmed against each buyer brief.</p>
-              <Link href={`/products/${product.id}`} className="portfolio-card__link">Explore {product.name} <span aria-hidden="true">→</span></Link>
+              <h3 className="portfolio-card__product-name">{getProductName(product)}</h3>
+              {(product.description || product.summary) && <p className="portfolio-card__summary">{product.description || product.summary}</p>}
+              {product.id && <Link href={`/products/${product.id}`} className="portfolio-card__link">Explore {getProductName(product)} <span aria-hidden="true">→</span></Link>}
             </div>
-          </FadeIn>
+          </article>
         ))}
       </div>
     </>

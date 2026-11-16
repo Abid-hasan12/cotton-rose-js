@@ -1248,6 +1248,362 @@ h2 {
   transform: translateY(0);
 }
 
+/* =========================================================
+   ADMIN DASHBOARD
+   ========================================================= */
+.admin-auth {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--bg-light);
+}
+
+.admin-auth__card,
+.admin-panel,
+.admin-stats > div {
+  border: 1px solid rgba(var(--primary-rgb), 0.1);
+  border-radius: 10px;
+  background: var(--white);
+  box-shadow: 0 16px 40px rgba(var(--primary-rgb), 0.08);
+}
+
+.admin-auth__card {
+  width: min(440px, 100%);
+  padding: 42px;
+}
+
+.admin-auth h1,
+.admin-header h1 {
+  margin-bottom: 8px;
+}
+
+.admin-muted {
+  color: rgba(var(--text-rgb), 0.68);
+}
+
+.admin-form {
+  display: grid;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.admin-form input,
+.admin-toolbar select,
+.admin-status {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid rgba(var(--primary-rgb), 0.2);
+  border-radius: var(--radius);
+  color: var(--text);
+  background: var(--white);
+}
+
+.admin-form input:focus,
+.admin-toolbar select:focus,
+.admin-status:focus {
+  outline: 2px solid rgba(var(--accent-rgb), 0.5);
+  outline-offset: 1px;
+}
+
+.admin-form .btn {
+  margin-top: 12px;
+}
+
+.admin-alert {
+  margin: 18px 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--accent);
+  color: var(--primary);
+  background: rgba(var(--accent-rgb), 0.12);
+}
+
+.admin-shell {
+  min-height: 100vh;
+  padding: 48px max(24px, calc((100% - var(--max-width)) / 2));
+  background: var(--bg-light);
+}
+
+.admin-header,
+.admin-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.admin-link-button,
+.admin-name,
+.admin-delete {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.admin-link-button:hover,
+.admin-name:hover,
+.admin-delete:hover {
+  color: var(--accent);
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 24px;
+  margin: 30px 0 24px;
+  border-bottom: 1px solid rgba(var(--primary-rgb), 0.15);
+}
+
+.admin-tab {
+  padding: 10px 2px 12px;
+  color: rgba(var(--text-rgb), 0.68);
+  font-weight: 700;
+  border-bottom: 3px solid transparent;
+}
+
+.admin-tab--active {
+  color: var(--primary);
+  border-color: var(--accent);
+}
+
+.admin-products {
+  display: grid;
+  gap: 24px;
+}
+
+.admin-product-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.admin-product-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.admin-product-form input,
+.admin-product-form select,
+.admin-product-form textarea {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid rgba(var(--primary-rgb), 0.2);
+  border-radius: var(--radius);
+  color: var(--text);
+  background: var(--white);
+  font: inherit;
+  font-weight: 400;
+}
+
+.admin-product-form textarea {
+  resize: vertical;
+}
+
+.admin-upload-label {
+  display: grid;
+  gap: 6px;
+  color: rgba(var(--text-rgb), 0.68);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.admin-upload-label input {
+  padding: 8px;
+}
+
+.admin-product-form__wide {
+  grid-column: 1 / -1;
+}
+
+.admin-product-form__actions {
+  display: flex !important;
+  justify-content: flex-end;
+}
+
+.admin-product-thumb {
+  width: 64px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: var(--bg-light);
+}
+
+.admin-actions {
+  white-space: nowrap;
+}
+
+.admin-actions button + button {
+  margin-left: 14px;
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 220px));
+  gap: 18px;
+  margin: 36px 0 24px;
+}
+
+.admin-stats > div {
+  padding: 22px;
+}
+
+.admin-stats span,
+.admin-stats strong {
+  display: block;
+}
+
+.admin-stats span {
+  color: rgba(var(--text-rgb), 0.68);
+  font-size: 0.9rem;
+}
+
+.admin-stats strong {
+  margin-top: 4px;
+  color: var(--primary);
+  font-size: 2rem;
+}
+
+.admin-panel {
+  padding: 24px;
+}
+
+.admin-toolbar {
+  margin-bottom: 20px;
+}
+
+.admin-toolbar h2 {
+  font-size: 1.4rem;
+}
+
+.admin-toolbar label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.admin-toolbar select {
+  width: auto;
+  min-width: 130px;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid rgba(var(--primary-rgb), 0.1);
+  text-align: left;
+  vertical-align: top;
+}
+
+.admin-table th {
+  color: var(--primary);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.admin-status {
+  min-width: 112px;
+  padding: 7px 8px;
+  font-size: 0.85rem;
+}
+
+.admin-status--pending {
+  border-color: var(--accent);
+}
+
+.admin-status--contacted {
+  border-color: var(--primary);
+}
+
+.admin-status--closed {
+  opacity: 0.7;
+}
+
+.admin-delete {
+  font-size: 0.82rem;
+}
+
+.admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(var(--primary-rgb), 0.72);
+}
+
+.admin-modal {
+  position: relative;
+  width: min(620px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  padding: 38px;
+  border-radius: 10px;
+  background: var(--white);
+  box-shadow: 0 24px 60px rgba(var(--primary-rgb), 0.25);
+}
+
+.admin-modal__close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  color: var(--primary);
+  font-size: 1.8rem;
+}
+
+.admin-details {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 12px 18px;
+  margin: 28px 0;
+}
+
+.admin-details dt {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.admin-details dd {
+  white-space: pre-wrap;
+}
+
+@media (max-width: 640px) {
+  .admin-shell {
+    padding: 28px 16px;
+  }
+
+  .admin-header,
+  .admin-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-product-form {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-auth__card,
+  .admin-panel {
+    padding: 24px;
+  }
+}
+
 .fade-in.process__card {
   transition: opacity 0.6s ease, transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -1594,6 +1950,19 @@ h2 {
   letter-spacing: 0.08em;
 }
 
+.portfolio-nav__item {
+  min-width: 0;
+}
+
+.portfolio-message {
+  padding: 32px;
+  border: 1px solid rgba(var(--primary-rgb), 0.1);
+  border-radius: calc(var(--radius) + 8px);
+  color: rgba(var(--text-rgb), 0.72);
+  background: var(--white);
+  text-align: center;
+}
+
 .portfolio-nav__item:hover {
   color: var(--primary);
   background: rgba(var(--primary-rgb), 0.05);
@@ -1612,14 +1981,14 @@ h2 {
 
 .portfolio-list {
   display: grid;
-  gap: 42px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
 }
 
 .portfolio-card {
-  scroll-margin-top: 145px;
   display: grid;
-  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
-  min-height: 560px;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 0;
   overflow: hidden;
   border: 1px solid rgba(var(--primary-rgb), 0.09);
   border-radius: calc(var(--radius) + 12px);
@@ -1634,12 +2003,12 @@ h2 {
 }
 
 .portfolio-card--reverse .portfolio-card__visual {
-  order: 2;
+  order: 0;
 }
 
 .portfolio-card__visual {
   position: relative;
-  min-height: 100%;
+  min-height: 250px;
   overflow: hidden;
   isolation: isolate;
 }
@@ -1653,6 +2022,10 @@ h2 {
 }
 
 .portfolio-card__visual img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
@@ -1706,7 +2079,12 @@ h2 {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: clamp(32px, 5vw, 58px);
+  padding: 30px;
+}
+
+.portfolio-card__product-name {
+  margin-top: 22px;
+  font-size: 1.45rem;
 }
 
 .portfolio-card__topline {
@@ -2631,7 +3009,7 @@ h2 {
   }
 
   .portfolio-card {
-    grid-template-columns: minmax(280px, 0.78fr) minmax(0, 1.22fr);
+    grid-template-columns: 1fr;
   }
 
   .portfolio-card__content {
@@ -2889,6 +3267,7 @@ h2 {
 
   .portfolio-list {
     gap: 30px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .portfolio-card {
