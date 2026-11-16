@@ -30,11 +30,6 @@ export default function HomePage() {
             <h1 className="hero__title" id="home-hero-title">From buyer brief to shipment, <span>one accountable sourcing partner.</span></h1>
             <p className="hero__tagline">CottonRose represents international buyers across product development, order-specific sourcing, quality coordination, commercial follow-up, and shipment handover.</p>
             <div className="hero__actions"><Link href="/contact" className="btn btn--gold">Discuss Your Requirement <span aria-hidden="true">→</span></Link><Link href="/products" className="btn btn--outline">Explore Product Offering</Link></div>
-            <ul className="hero__assurances" aria-label="CottonRose service assurances">
-              <li><strong>Buyer-side</strong><span>Independent coordination</span></li>
-              <li><strong>Brief-led</strong><span>Order-specific sourcing</span></li>
-              <li><strong>Documented</strong><span>Quality and milestone follow-up</span></li>
-            </ul>
           </div>
 
           <div className="hero__visual" aria-label="CottonRose apparel sourcing portfolio">

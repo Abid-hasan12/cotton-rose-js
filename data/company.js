@@ -32,3 +32,4 @@ export const primaryNavigation = [
   { href: "/quality-compliance", label: "Quality & Compliance", match: (pathname) => pathname.startsWith("/quality-compliance") || pathname.startsWith("/sustainability") },
   { href: "/contact", label: "Contact", match: (pathname) => pathname.startsWith("/contact") },
 ];
+ 
