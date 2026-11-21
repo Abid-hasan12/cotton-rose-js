@@ -1,0 +1,2 @@
+import ContentEditor from "../_components/ContentEditor";
+export default function LeadershipPage() { return <ContentEditor title="Leadership" eyebrow="Company content" endpoint="/api/admin/leadership" empty={{ slug: "", name: "", role: "", initials: "", image_url: "", summary: "" }} fields={[{ key: "name", label: "Name", required: true }, { key: "role", label: "Role", required: true }, { key: "slug", label: "Slug", required: true }, { key: "image_url", label: "Image URL" }, { key: "summary", label: "Summary", type: "textarea" }]} />; }

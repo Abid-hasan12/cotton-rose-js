@@ -3,7 +3,7 @@ import Image from "next/image";
 import FadeIn from "@/components/FadeIn";
 import CtaBanner from "@/components/CtaBanner";
 import SourcingProcess from "@/components/SourcingProcess";
-import { products } from "@/data/products";
+import { fetchPublicApi } from "@/lib/public-api-client";
 
 const proofPoints = [
   ["Buyer Representation", "One accountable CottonRose contact coordinates the brief, decisions, milestones, and follow-up."],
@@ -19,7 +19,9 @@ const features = [
   ["Private due diligence", "Applicable supplier documents are reviewed and shared with qualified buyers for the proposed order."],
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const products = await fetchPublicApi("/api/products?group=core&limit=100", "products");
+
   return (
     <>
       <section className="hero" aria-labelledby="home-hero-title">
@@ -58,7 +60,7 @@ export default function HomePage() {
 
       <section className="section" id="products"><div className="container">
         <FadeIn className="section__head"><span className="section-label">What we source</span><h2>Product Offering</h2><p>Four core sourcing groups supported by a broader catalogue. Availability is confirmed against each buyer&apos;s tech pack, quantity, materials, standards, and delivery target.</p></FadeIn>
-        <div className="category-grid">{products.map(({ id, name, image, alt, summary }) => <FadeIn as={Link} href={`/products/${id}`} className="category-card" key={id}><Image src={image} alt={alt} fill sizes="(max-width: 768px) 100vw, 50vw" /><div className="category-card__overlay"><span className="category-card__title">{name}</span><span className="category-card__summary">{summary}</span><span className="category-card__link">Explore offering →</span></div></FadeIn>)}</div>
+        <div className="category-grid">{products.map(({ slug, name, image, summary }) => <FadeIn as={Link} href={`/products/${slug}`} className="category-card" key={slug}><Image src={image?.url || "/images/product-placeholder-1.svg"} alt={image?.alt || name} fill sizes="(max-width: 768px) 100vw, 50vw" /><div className="category-card__overlay"><span className="category-card__title">{name}</span><span className="category-card__summary">{summary}</span><span className="category-card__link">Explore offering →</span></div></FadeIn>)}</div>
         <FadeIn className="section-action"><Link href="/diversified-products" className="btn btn--navy">View Diversified Product Lines</Link></FadeIn>
       </div></section>
 

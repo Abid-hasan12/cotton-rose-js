@@ -1,19 +1,40 @@
 "use client";
 
 import Link from "next/link";
-import { cloneElement, useRef, useState } from "react";
+import { cloneElement, useEffect, useRef, useState } from "react";
 import FadeIn from "./FadeIn";
-import { products } from "@/data/products";
-import { diversifiedProducts } from "@/data/diversifiedProducts";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phonePattern = /^[0-9+()\-\s]{7,}$/;
-const interests = [...products.map(({ id, name }) => [id, name]), ...diversifiedProducts.map(({ id, name }) => [`diversified-${id}`, name])];
-
 export default function ContactForm() {
+  const [interests, setInterests] = useState([]);
+  const [interestError, setInterestError] = useState("");
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState({ type: "idle", message: "" });
   const summaryRef = useRef(null);
+
+  useEffect(() => {
+    async function loadInterests() {
+      try {
+        const [coreResponse, diversifiedResponse] = await Promise.all([
+          fetch("/api/products?group=core&limit=100"),
+          fetch("/api/products?group=diversified&limit=100"),
+        ]);
+        const coreResult = await coreResponse.json();
+        const diversifiedResult = await diversifiedResponse.json();
+        if (!coreResponse.ok) throw new Error(coreResult.error || "Could not load product interests.");
+        if (!diversifiedResponse.ok) throw new Error(diversifiedResult.error || "Could not load product interests.");
+        setInterests([
+          ...coreResult.data.map(({ slug, name }) => [slug, name]),
+          ...diversifiedResult.data.map(({ slug, name }) => [`diversified-${slug}`, name]),
+        ]);
+      } catch (error) {
+        setInterestError(error.message);
+      }
+    }
+
+    loadInterests();
+  }, []);
 
   const submit = async (event) => {
     event.preventDefault();
@@ -57,7 +78,7 @@ export default function ContactForm() {
       </div>
       <div className="form__row">
         <Field label="Email Address" id="email" error={errors.email} required><input type="email" id="email" name="email" autoComplete="email" /></Field>
-        <Field label="Product Interest" id="product" error={errors.product} required><select id="product" name="product" defaultValue=""><option value="">Select a category</option>{interests.map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></Field>
+        <Field label="Product Interest" id="product" error={errors.product} required><select id="product" name="product" defaultValue="" disabled={!interests.length}><option value="">{interestError || (interests.length ? "Select a category" : "Loading categories...")}</option>{interests.map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></Field>
       </div>
       <div className="form__row">
         <Field label="Estimated Quantity" id="quantity"><input type="text" id="quantity" name="quantity" placeholder="e.g. 5,000 pieces" /></Field>

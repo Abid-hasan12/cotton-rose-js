@@ -18,7 +18,12 @@ export default function AdminLoginPage() {
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || "Login failed.");
       const next = new URLSearchParams(window.location.search).get("next");
-      router.replace(next && next.startsWith("/") && !next.startsWith("//") ? next : "/admin");
+      const normalizedNext = next?.replace(/\/+$/, "") || "";
+      const destination =
+        next && next.startsWith("/") && !next.startsWith("//") && normalizedNext !== "/admin/login"
+          ? next
+          : "/admin";
+      router.replace(destination);
     } catch (error) {
       setMessage(error.message);
     } finally {
