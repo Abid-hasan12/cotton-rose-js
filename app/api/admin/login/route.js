@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { query } from "@/lib/db";
-import { ADMIN_COOKIE, createAdminToken } from "@/lib/auth";
+import { ADMIN_COOKIE, adminCookieOptions, createAdminToken } from "@/lib/auth";
 
 export async function POST(request) {
   let body;
@@ -24,13 +24,7 @@ export async function POST(request) {
 
     const token = await createAdminToken(admin.username);
     const response = NextResponse.json({ authenticated: true });
-    response.cookies.set(ADMIN_COOKIE, token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 8,
-    });
+    response.cookies.set(ADMIN_COOKIE, token, adminCookieOptions());
     return response;
   } catch (error) {
     console.error("Admin login failed:", error);

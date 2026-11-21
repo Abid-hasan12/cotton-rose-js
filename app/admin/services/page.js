@@ -1,0 +1,2 @@
+import ContentEditor from "../_components/ContentEditor";
+export default function ServicesPage() { return <ContentEditor title="Services" eyebrow="Company content" endpoint="/api/admin/services" empty={{ slug: "", title: "", description: "", image_url: "", deliverable: "" }} fields={[{ key: "title", label: "Title", required: true }, { key: "slug", label: "Slug", required: true }, { key: "image_url", label: "Image URL" }, { key: "deliverable", label: "Deliverable" }, { key: "description", label: "Description", type: "textarea", required: true }]} />; }

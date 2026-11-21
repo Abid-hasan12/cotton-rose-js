@@ -1,0 +1,2 @@
+import ContentEditor from "../_components/ContentEditor";
+export default function CategoriesPage() { return <ContentEditor title="Categories" eyebrow="Catalogue structure" endpoint="/api/admin/categories" empty={{ slug: "", name: "", category_group: "core" }} fields={[{ key: "name", label: "Category name", required: true }, { key: "slug", label: "Slug", required: true }, { key: "category_group", label: "Type (core or diversified)", required: true }]} />; }

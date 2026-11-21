@@ -1,8 +1,15 @@
 import Link from "next/link";
-import { products } from "@/data/products";
-import { company, companyAddress } from "@/data/company";
+import { fetchPublicApi } from "@/lib/public-api-client";
 
-export default function SiteFooter() {
+export default async function SiteFooter() {
+  const [products, company] = await Promise.all([
+    fetchPublicApi("/api/products?group=core&limit=100", "products"),
+    fetchPublicApi("/api/company", "company"),
+  ]);
+  const contact = company.contacts[0];
+  const address = company.addresses[0];
+  const companyAddress = `${address.street}, ${address.city}-${address.postcode}, ${address.country}`;
+
   return (
     <footer className="site-footer">
       <div className="container">
@@ -25,7 +32,7 @@ export default function SiteFooter() {
             <h4><Link href="/products">Product Offering</Link></h4>
             <ul>
               <li><Link href="/products">All Product Offerings</Link></li>
-              {products.map((product) => <li key={product.id}><Link href={`/products/${product.id}`}>{product.name}</Link></li>)}
+              {products.map((product) => <li key={product.slug}><Link href={`/products/${product.slug}`}>{product.name}</Link></li>)}
               <li><Link href="/diversified-products">Diversified Product Lines</Link></li>
             </ul>
           </div>
@@ -33,8 +40,8 @@ export default function SiteFooter() {
             <h4>Contact</h4>
             <ul>
               <li>{companyAddress}</li>
-              <li><a href={`tel:${company.contact.mobileHref}`}>{company.contact.mobileDisplay}</a></li>
-              <li><a href={`mailto:${company.contact.email}`}>{company.contact.email}</a></li>
+              <li><a href={`tel:${contact.mobile_href}`}>{contact.mobile_display}</a></li>
+              <li><a href={`mailto:${contact.email}`}>{contact.email}</a></li>
             </ul>
           </div>
         </div>
