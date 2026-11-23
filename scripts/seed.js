@@ -87,6 +87,30 @@ async function seed() {
   try {
     await connection.beginTransaction();
 
+    const [categoryIdColumns] = await connection.query(
+      "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'products' AND COLUMN_NAME = 'category_id'",
+    );
+    let hasCategoryId = categoryIdColumns.length > 0;
+    if (!hasCategoryId) {
+      await connection.execute("ALTER TABLE products ADD COLUMN category_id INT NULL AFTER category");
+      hasCategoryId = true;
+    }
+
+    for (const [columnName, definition] of [
+      ["offerings_json", "JSON NULL"],
+      ["materials_json", "JSON NULL"],
+      ["options_json", "JSON NULL"],
+      ["sort_order", "INT NOT NULL DEFAULT 0"],
+    ]) {
+      const [columnRows] = await connection.query(
+        "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'products' AND COLUMN_NAME = ?",
+        [columnName],
+      );
+      if (!columnRows.length) {
+        await connection.execute(`ALTER TABLE products ADD COLUMN ${columnName} ${definition}`);
+      }
+    }
+
     const [existingProfiles] = await connection.query(
       "SELECT id FROM company_profiles WHERE name = ? LIMIT 1",
       [company.name],
@@ -117,18 +141,33 @@ async function seed() {
     );
     if (!profile) throw new Error("Company profile was not created");
 
-    await connection.execute("DELETE FROM company_addresses WHERE company_id = ?", [profile.id]);
-    await upsert(connection, `
-      INSERT INTO company_addresses
-        (company_id, label, street, city, postcode, country, map_query, is_primary, sort_order)
-      VALUES (?, 'Primary', ?, ?, ?, ?, ?, 1, 1)
-    `, [
-      profile.id, company.address.street, company.address.city,
-      company.address.postcode, company.address.country,
-      `${company.address.street}, ${company.address.city} ${company.address.postcode}, ${company.address.country}`,
-    ]);
+    const [existingAddress] = await connection.query(
+      "SELECT id FROM company_addresses WHERE company_id = ? LIMIT 1",
+      [profile.id],
+    );
+    if (existingAddress.length) {
+      await connection.execute(`
+        UPDATE company_addresses
+        SET label = 'Primary', street = ?, city = ?, postcode = ?, country = ?, map_query = ?, is_primary = 1, sort_order = 1
+        WHERE id = ?
+      `, [
+        company.address.street, company.address.city, company.address.postcode,
+        company.address.country,
+        `${company.address.street}, ${company.address.city} ${company.address.postcode}, ${company.address.country}`,
+        existingAddress[0].id,
+      ]);
+    } else {
+      await upsert(connection, `
+        INSERT INTO company_addresses
+          (company_id, label, street, city, postcode, country, map_query, is_primary, sort_order)
+        VALUES (?, 'Primary', ?, ?, ?, ?, ?, 1, 1)
+      `, [
+        profile.id, company.address.street, company.address.city,
+        company.address.postcode, company.address.country,
+        `${company.address.street}, ${company.address.city} ${company.address.postcode}, ${company.address.country}`,
+      ]);
+    }
 
-    await connection.execute("DELETE FROM company_contacts WHERE company_id = ?", [profile.id]);
     const contacts = [
       ["email", "Email", company.contact.email, `mailto:${company.contact.email}`, 1],
       ["mobile", "Mobile", company.contact.mobileDisplay, `tel:${company.contact.mobileHref}`, 2],
@@ -136,11 +175,23 @@ async function seed() {
       ["whatsapp", "WhatsApp", company.contact.mobileDisplay, company.contact.whatsapp, 4],
     ];
     for (const [contactType, label, displayValue, linkValue, sortOrder] of contacts) {
-      await upsert(connection, `
-        INSERT INTO company_contacts
-          (company_id, contact_type, label, display_value, link_value, is_primary, sort_order)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-      `, [profile.id, contactType, label, displayValue, linkValue, contactType === "email" ? 1 : 0, sortOrder]);
+      const [existingContact] = await connection.query(
+        "SELECT id FROM company_contacts WHERE company_id = ? AND contact_type = ? LIMIT 1",
+        [profile.id, contactType],
+      );
+      if (existingContact.length) {
+        await connection.execute(`
+          UPDATE company_contacts
+          SET label = ?, display_value = ?, link_value = ?, is_primary = ?, sort_order = ?
+          WHERE id = ?
+        `, [label, displayValue, linkValue, contactType === "email" ? 1 : 0, sortOrder, existingContact[0].id]);
+      } else {
+        await upsert(connection, `
+          INSERT INTO company_contacts
+            (company_id, contact_type, label, display_value, link_value, is_primary, sort_order)
+          VALUES (?, ?, ?, ?, ?, ?, ?)
+        `, [profile.id, contactType, label, displayValue, linkValue, contactType === "email" ? 1 : 0, sortOrder]);
+      }
     }
 
     for (const [key, value] of Object.entries({
@@ -159,7 +210,7 @@ async function seed() {
       ...products.map((product, index) => ({
         slug: `core-${product.id}`, name: product.name, group: "core", order: index + 1,
       })),
-      ...[...new Set(diversifiedProducts.map((product) => product.group))].map((group, index) => ({
+      ...["Woven", "Knit", "Outerwear", "Denim"].map((group, index) => ({
         slug: `diversified-${group.toLowerCase()}`, name: group, group: "diversified", order: index + 1,
       })),
     ];
@@ -176,6 +227,7 @@ async function seed() {
     }
 
     for (const [index, product] of products.entries()) {
+      const categoryId = categoryIds.get(`core-${product.id}`);
       const [existing] = await connection.query(
         "SELECT id FROM products WHERE title = ? AND category = ? LIMIT 1",
         [product.name, product.name],
@@ -185,19 +237,29 @@ async function seed() {
         productId = existing[0].id;
         await upsert(connection, `
           UPDATE products
-          SET title = ?, category = ?, description = ?, image_url = ?
+          SET title = ?, category = ?, category_id = ?, description = ?, image_url = ?,
+              offerings_json = ?, materials_json = ?, options_json = ?, sort_order = ?
           WHERE id = ?
-        `, [product.name, product.name, product.summary, product.image, productId]);
+        `, [
+          product.name, product.name, categoryId, product.summary, product.image,
+          json(product.offerings), json(product.fabrics), json(product.options),
+          index + 1, productId,
+        ]);
       } else {
         const result = await upsert(connection, `
-          INSERT INTO products (title, category, description, image_url)
-          VALUES (?, ?, ?, ?)
-        `, [product.name, product.name, product.summary, product.image]);
+          INSERT INTO products
+            (title, category, category_id, description, image_url, offerings_json, materials_json, options_json, sort_order)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [
+          product.name, product.name, categoryId, product.summary, product.image,
+          json(product.offerings), json(product.fabrics), json(product.options), index + 1,
+        ]);
         productId = result.insertId;
       }
     }
 
     for (const [index, product] of diversifiedProducts.entries()) {
+      const categoryId = categoryIds.get(`diversified-${product.group.toLowerCase()}`);
       const [existing] = await connection.query(
         "SELECT id FROM products WHERE title = ? AND category = ? LIMIT 1",
         [product.name, product.group],
@@ -207,29 +269,42 @@ async function seed() {
         productId = existing[0].id;
         await connection.execute(`
           UPDATE products
-          SET title = ?, category = ?, description = ?, image_url = ?
+          SET title = ?, category = ?, category_id = ?, description = ?, image_url = ?,
+              offerings_json = ?, materials_json = ?, options_json = ?, sort_order = ?
           WHERE id = ?
-        `, [product.name, product.group, product.summary, product.image, productId]);
+        `, [
+          product.name, product.group, categoryId, product.summary, product.image,
+          json([]), json(product.materials), json([]), index + 1, productId,
+        ]);
       } else {
         const [result] = await connection.execute(`
-          INSERT INTO products (title, category, description, image_url)
-          VALUES (?, ?, ?, ?)
-        `, [product.name, product.group, product.summary, product.image]);
+          INSERT INTO products
+            (title, category, category_id, description, image_url, offerings_json, materials_json, options_json, sort_order)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [
+          product.name, product.group, categoryId, product.summary, product.image,
+          json([]), json(product.materials), json([]), index + 1,
+        ]);
         productId = result.insertId;
       }
     }
 
     for (const product of [...products, ...diversifiedProducts]) {
+      const categoryName = product.group || product.name;
       const [[row]] = await connection.query(
-        "SELECT id FROM products WHERE title = ? LIMIT 1",
-        [product.name],
+        "SELECT id FROM products WHERE title = ? AND category = ? LIMIT 1",
+        [product.name, categoryName],
       );
       if (!row) throw new Error(`Product was not created: ${product.name}`);
-      await connection.execute("DELETE FROM product_images WHERE product_id = ?", [row.id]);
       const gallery = product.gallery || [{ src: product.image, alt: product.alt }];
       for (const [imageIndex, image] of gallery.entries()) {
         const mediaId = await ensureMedia(connection, image.src, image.alt);
         if (!mediaId) continue;
+        const [existingImage] = await connection.query(
+          "SELECT id FROM product_images WHERE product_id = ? AND media_id = ? LIMIT 1",
+          [row.id, mediaId],
+        );
+        if (existingImage.length) continue;
         await upsert(connection, `
           INSERT INTO product_images
             (product_id, media_id, alt_text, image_role, sort_order)
@@ -269,20 +344,40 @@ async function seed() {
       json(service.points), service.deliverable, index + 1]);
     }
 
-    await connection.execute("DELETE FROM process_steps");
     for (const [index, step] of sourcingProcess.entries()) {
-      await upsert(connection, `
-        INSERT INTO process_steps (title, description, sort_order)
-        VALUES (?, ?, ?)
-      `, [step.title, step.description, index + 1]);
+      const [existingStep] = await connection.query(
+        "SELECT id FROM process_steps WHERE title = ? LIMIT 1",
+        [step.title],
+      );
+      if (existingStep.length) {
+        await connection.execute(
+          "UPDATE process_steps SET description = ?, sort_order = ? WHERE id = ?",
+          [step.description, index + 1, existingStep[0].id],
+        );
+      } else {
+        await upsert(connection, `
+          INSERT INTO process_steps (title, description, sort_order)
+          VALUES (?, ?, ?)
+        `, [step.title, step.description, index + 1]);
+      }
     }
 
-    await connection.execute("DELETE FROM process_glossary");
     for (const [index, [term, description]] of sourcingGlossary.entries()) {
-      await upsert(connection, `
-        INSERT INTO process_glossary (term, meaning, sort_order)
-        VALUES (?, ?, ?)
-      `, [term, description, index + 1]);
+      const [existingTerm] = await connection.query(
+        "SELECT id FROM process_glossary WHERE term = ? LIMIT 1",
+        [term],
+      );
+      if (existingTerm.length) {
+        await connection.execute(
+          "UPDATE process_glossary SET meaning = ?, sort_order = ? WHERE id = ?",
+          [description, index + 1, existingTerm[0].id],
+        );
+      } else {
+        await upsert(connection, `
+          INSERT INTO process_glossary (term, meaning, sort_order)
+          VALUES (?, ?, ?)
+        `, [term, description, index + 1]);
+      }
     }
 
     await connection.commit();

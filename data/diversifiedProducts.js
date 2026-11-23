@@ -43,7 +43,7 @@ const makeGallery = (id, group) => {
   return keys.map((key) => imageLibrary[key]);
 };
 
-export const diversifiedProductGroups = ["All", "Knit", "Woven", "Outerwear", "Denim"];
+export const diversifiedProductGroups = ["All", "Woven", "Knit", "Outerwear", "Denim"];
 
 const catalogue = [
   ["swimwear-board-shorts", "Swimwear / Board Shorts", "Swimwear", "Woven", "Performance swim pieces and quick-dry board shorts engineered for comfort and movement.", ["Recycled polyester", "Nylon stretch", "Quick-dry microfiber", "Mesh lining"], ["1560089000-7433a4ebbd64", "1571019613454-1cb2f99b2d8b", "1502680390469-be75c86b636f", "1596755389378-c31d21fd1273"]],

@@ -2,6 +2,7 @@ import PageHero from "@/components/PageHero";
 import FadeIn from "@/components/FadeIn";
 import DiversifiedProductCatalogue from "@/components/DiversifiedProductCatalogue";
 import CtaBanner from "@/components/CtaBanner";
+import { Suspense } from "react";
 
 export const metadata = {
   title: "Diversified Product Lines",
@@ -19,7 +20,11 @@ export default function DiversifiedProductsPage() {
             <h2>Explore every product line</h2>
             <p>Select a category to browse illustrative product references and common material capabilities.</p>
           </FadeIn>
-          <FadeIn><DiversifiedProductCatalogue /></FadeIn>
+          <FadeIn>
+            <Suspense fallback={<p className="portfolio-message">Loading diversified products...</p>}>
+              <DiversifiedProductCatalogue />
+            </Suspense>
+          </FadeIn>
         </div>
       </section>
       <CtaBanner title="Have a Product in Mind?" text="Send your tech pack or reference image for an order-specific sourcing review." />

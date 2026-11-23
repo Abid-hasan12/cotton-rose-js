@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { query } from "@/lib/db";
-import { idFromRequest, readJson, requireAdmin, text } from "@/lib/admin-api";
+import { query, tableColumns } from "@/lib/db";
+import { idFromRequest, jsonValue, readJson, requireAdmin, text } from "@/lib/admin-api";
 
 const slugify = (value) => String(value || "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const isInputError = (error) => ["Invalid product gallery.", "Product gallery images require a URL."].includes(error.message);
@@ -41,10 +41,37 @@ async function saveGallery(productId, gallery) {
 }
 
 async function product(id) {
+  const [categoryColumns, productColumns] = await Promise.all([
+    query("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'product_categories'"),
+    query("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'products'"),
+  ]);
+  const categoryColumnNames = new Set(categoryColumns.map((row) => row.COLUMN_NAME));
+  const productColumnNames = new Set(productColumns.map((row) => row.COLUMN_NAME));
+  const categoryGroupColumn = categoryColumnNames.has("navigation_group")
+    ? "navigation_group"
+    : categoryColumnNames.has("category_group")
+      ? "category_group"
+      : "navigation_group";
+  const categoryJoin = productColumnNames.has("category_id")
+    ? "LEFT JOIN product_categories pc ON (pc.id = p.category_id OR (p.category_id IS NULL AND pc.name = p.category))"
+    : "LEFT JOIN product_categories pc ON pc.name = p.category";
+  const productExtra = {
+    offerings: productColumnNames.has("offerings_json") ? "p.offerings_json" : null,
+    materials: productColumnNames.has("materials_json") ? "p.materials_json" : null,
+    options: productColumnNames.has("options_json") ? "p.options_json" : null,
+    sort: productColumnNames.has("sort_order") ? "p.sort_order" : null,
+  };
+  const extraSelect = [
+    productExtra.offerings ? `${productExtra.offerings} AS offerings` : "NULL AS offerings",
+    productExtra.materials ? `${productExtra.materials} AS materials` : "NULL AS materials",
+    productExtra.options ? `${productExtra.options} AS options` : "NULL AS options",
+    productExtra.sort ? `${productExtra.sort} AS sort_order` : "0 AS sort_order",
+  ].join(",");
   const rows = await query(
     `SELECT p.id,p.title AS name,p.category AS category_name,p.description AS summary,p.image_url,
-            pc.id AS category_id,pc.slug,pc.navigation_group AS category_group
-     FROM products p LEFT JOIN product_categories pc ON pc.name=p.category WHERE p.id=?`,
+            pc.id AS category_id,pc.slug,pc.${categoryGroupColumn} AS category_group,
+            ${extraSelect}
+     FROM products p ${categoryJoin} WHERE p.id=?`,
     [id],
   );
   if (!rows.length) return null;
@@ -54,12 +81,18 @@ async function product(id) {
      WHERE pi.product_id=? ORDER BY pi.sort_order,pi.id`,
     [id],
   );
+  const parseArray = (value) => {
+    try {
+      const parsed = typeof value === "string" ? JSON.parse(value) : value;
+      return Array.isArray(parsed) ? parsed : [];
+    } catch { return []; }
+  };
   return {
     ...rows[0],
     slug: rows[0].slug || slugify(rows[0].name),
-    offerings: [],
-    materials: [],
-    options: [],
+    offerings: parseArray(rows[0].offerings),
+    materials: parseArray(rows[0].materials),
+    options: parseArray(rows[0].options),
     images,
   };
 }
@@ -67,11 +100,33 @@ async function product(id) {
 export async function GET() {
   const denied = await requireAdmin(); if (denied) return denied;
   try {
+    const [categoryColumns, productColumns] = await Promise.all([
+      query("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'product_categories'"),
+      query("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'products'"),
+    ]);
+    const categoryColumnNames = new Set(categoryColumns.map((row) => row.COLUMN_NAME));
+    const productColumnNames = new Set(productColumns.map((row) => row.COLUMN_NAME));
+    const categoryGroupColumn = categoryColumnNames.has("navigation_group")
+      ? "navigation_group"
+      : categoryColumnNames.has("category_group")
+        ? "category_group"
+        : "navigation_group";
+    const categoryJoin = productColumnNames.has("category_id")
+      ? "LEFT JOIN product_categories pc ON (pc.id = p.category_id OR (p.category_id IS NULL AND pc.name = p.category))"
+      : "LEFT JOIN product_categories pc ON pc.name = p.category";
+    const extraSelect = [
+      productColumnNames.has("offerings_json") ? "p.offerings_json AS offerings" : "NULL AS offerings",
+      productColumnNames.has("materials_json") ? "p.materials_json AS materials" : "NULL AS materials",
+      productColumnNames.has("options_json") ? "p.options_json AS options" : "NULL AS options",
+      productColumnNames.has("sort_order") ? "p.sort_order" : "0 AS sort_order",
+    ].join(",");
     const rows = await query(
       `SELECT p.id,p.title AS name,p.category,p.description AS summary,p.image_url,
-              pc.id AS category_id,pc.slug,pc.navigation_group AS category_group,pc.name AS category_name
-       FROM products p LEFT JOIN product_categories pc ON pc.name=p.category
-       ORDER BY pc.navigation_group,p.id,p.title`,
+              pc.id AS category_id,pc.slug,pc.${categoryGroupColumn} AS category_group,
+              COALESCE(pc.name,p.category) AS category_name,
+              ${extraSelect}
+       FROM products p ${categoryJoin}
+       ORDER BY pc.${categoryGroupColumn},${productColumnNames.has("sort_order") ? "p.sort_order," : ""}p.id,p.title`,
     );
     if (!rows.length) return NextResponse.json([]);
     const images = await query(
@@ -79,12 +134,18 @@ export async function GET() {
        FROM product_images pi LEFT JOIN media_assets ma ON ma.id=pi.media_id
        ORDER BY pi.sort_order,pi.id`,
     );
+    const parseArray = (value) => {
+      try {
+        const parsed = typeof value === "string" ? JSON.parse(value) : value;
+        return Array.isArray(parsed) ? parsed : [];
+      } catch { return []; }
+    };
     return NextResponse.json(rows.map((row) => ({
       ...row,
       slug: row.slug || slugify(row.name),
-      offerings: [],
-      materials: [],
-      options: [],
+      offerings: parseArray(row.offerings),
+      materials: parseArray(row.materials),
+      options: parseArray(row.options),
       images: images.filter((image) => image.product_id === row.id).map(({ product_id, ...image }) => image),
     })));
   } catch (error) {
@@ -104,9 +165,19 @@ export async function POST(request) {
   try {
     const category = await categoryName(Number(body.category_id || body.categoryId));
     if (!category) return NextResponse.json({ message: "A valid category is required." }, { status: 400 });
+    const categoryId = Number(body.category_id || body.categoryId);
+    const productColumns = await tableColumns("products");
+    const extraColumns = [];
+    const extraValues = [];
+    if (productColumns.has("offerings_json")) { extraColumns.push("offerings_json"); extraValues.push(jsonValue(body.offerings)); }
+    if (productColumns.has("materials_json")) { extraColumns.push("materials_json"); extraValues.push(jsonValue(body.materials)); }
+    if (productColumns.has("options_json")) { extraColumns.push("options_json"); extraValues.push(jsonValue(body.options)); }
+    if (productColumns.has("sort_order")) { extraColumns.push("sort_order"); extraValues.push(Number(body.sort_order || 0)); }
+    const columns = ["title", "category", "category_id", "description", "image_url", ...extraColumns];
+    const values = [name, category, categoryId, summary, imageUrl, ...extraValues];
     const result = await query(
-      "INSERT INTO products (title,category,description,image_url) VALUES (?,?,?,?)",
-      [name, category, summary, imageUrl],
+      `INSERT INTO products (${columns.join(",")}) VALUES (${columns.map(() => "?").join(",")})`,
+      values,
     );
     await saveGallery(result.insertId, body.gallery);
     return NextResponse.json(await product(result.insertId), { status: 201 });
@@ -129,9 +200,17 @@ export async function PUT(request) {
   try {
     const category = await categoryName(Number(body.category_id || body.categoryId));
     if (!category) return NextResponse.json({ message: "A valid category is required." }, { status: 400 });
+    const categoryId = Number(body.category_id || body.categoryId);
+    const productColumns = await tableColumns("products");
+    const assignments = ["title=?", "category=?", "category_id=?", "description=?", "image_url=?"];
+    const values = [name, category, categoryId, summary, imageUrl];
+    if (productColumns.has("offerings_json")) { assignments.push("offerings_json=?"); values.push(jsonValue(body.offerings)); }
+    if (productColumns.has("materials_json")) { assignments.push("materials_json=?"); values.push(jsonValue(body.materials)); }
+    if (productColumns.has("options_json")) { assignments.push("options_json=?"); values.push(jsonValue(body.options)); }
+    if (productColumns.has("sort_order")) { assignments.push("sort_order=?"); values.push(Number(body.sort_order || 0)); }
     const result = await query(
-      "UPDATE products SET title=?,category=?,description=?,image_url=? WHERE id=?",
-      [name, category, summary, imageUrl, id],
+      `UPDATE products SET ${assignments.join(",")} WHERE id=?`,
+      [...values, id],
     );
     if (!result.affectedRows) return NextResponse.json({ message: "Product not found." }, { status: 404 });
     await saveGallery(id, body.gallery);

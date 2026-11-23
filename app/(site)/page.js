@@ -20,7 +20,7 @@ const features = [
 ];
 
 export default async function HomePage() {
-  const products = await fetchPublicApi("/api/products?group=core&limit=100", "products");
+  const products = await fetchPublicApi("/api/products?group=core&limit=100", "products", []);
 
   return (
     <>

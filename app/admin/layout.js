@@ -5,12 +5,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const navigation = [
-  ["Company Settings", "/admin/company"],
+  ["Dashboard", "/admin"],
   ["Leadership", "/admin/leadership"],
-  ["Services", "/admin/services"],
-  ["Categories", "/admin/categories"],
   ["Products", "/admin/products"],
-  ["Media Library", "/admin/media"],
+  ["Category", "/admin/categories"],
   ["Inquiries", "/admin/inquiries"],
 ];
 

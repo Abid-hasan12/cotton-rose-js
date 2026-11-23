@@ -2,16 +2,30 @@ import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
 import { idFromRequest, readJson, requireAdmin, text } from "@/lib/admin-api";
 
-const statuses = new Set(["Pending", "Contacted", "Closed"]);
+const statuses = new Set(["new", "in_progress", "replied", "closed"]);
 
 export async function GET() {
   const denied = await requireAdmin(); if (denied) return denied;
   try {
-    return NextResponse.json(await query(
+    const columns = await query(
+      "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'inquiries'",
+    );
+    const hasInquiryType = columns.some((column) => column.COLUMN_NAME === "inquiry_type");
+    const inquiryTypeSelect = hasInquiryType ? "inquiry_type" : "NULL AS inquiry_type";
+    const rows = await query(
       `SELECT id,name,email,phone,product_id,product,quantity,destination,delivery_date,
-              message,privacy_consent,COALESCE(status,'Pending') AS status,notes,created_at,updated_at
+              message,privacy_consent,COALESCE(status,'new') AS status,
+              ${inquiryTypeSelect},notes,created_at,updated_at
        FROM inquiries ORDER BY created_at DESC`,
-    ));
+    );
+    return NextResponse.json(rows.map((row) => {
+      const value = String(row.status || "new").trim().toLower();
+      const status = value === "pending" ? "new"
+        : value === "contacted" ? "in_progress"
+        : ["new", "in_progress", "replied", "closed"].includes(value) ? value
+        : "new";
+      return { ...row, status };
+    }));
   } catch (error) { console.error("Could not load inquiries:", error); return NextResponse.json({ message: "Inquiries could not be loaded." }, { status: 500 }); }
 }
 

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { query } from "@/lib/db";
+import { query, tableColumns } from "@/lib/db";
 
 const attempts = new Map();
 const emailPattern = /^\S+@\S+\.\S+$/;
@@ -33,6 +33,9 @@ export async function POST(request) {
     deliveryDate: clean(body.deliveryDate, 40),
     message: clean(body.message, 4000),
     privacyConsent: body.privacyConsent === true || body.privacyConsent === "accepted" || body.privacy === "accepted",
+    inquiryType: ["contact", "quote", "product"].includes(clean(body.inquiryType || body.source, 30).toLowerCase())
+      ? clean(body.inquiryType || body.source, 30).toLowerCase()
+      : "contact",
   };
   if (!inquiry.name || !emailPattern.test(inquiry.email) || !phonePattern.test(inquiry.phone)
     || !inquiry.product || !inquiry.message || !inquiry.privacyConsent) {
@@ -40,13 +43,21 @@ export async function POST(request) {
   }
 
   try {
+    const columns = await tableColumns("inquiries");
+    const hasInquiryType = columns.has("inquiry_type");
+    const inquiryTypeColumn = hasInquiryType ? ", inquiry_type" : "";
+    const inquiryTypePlaceholder = hasInquiryType ? ", ?" : "";
     await query(
       `INSERT INTO inquiries
        (name, email, phone, product_id, product, quantity, destination, delivery_date,
-        message, privacy_consent, status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')`,
-      [inquiry.name, inquiry.email, inquiry.phone, inquiry.productId, inquiry.product,
-        inquiry.quantity, inquiry.destination, inquiry.deliveryDate || null, inquiry.message, inquiry.privacyConsent ? 1 : 0],
+         message, privacy_consent, status${inquiryTypeColumn})
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'new'${inquiryTypePlaceholder})`,
+      [
+         inquiry.name, inquiry.email, inquiry.phone, inquiry.productId, inquiry.product,
+         inquiry.quantity, inquiry.destination, inquiry.deliveryDate || null, inquiry.message,
+         inquiry.privacyConsent ? 1 : 0,
+         ...(hasInquiryType ? [inquiry.inquiryType] : []),
+      ],
     );
   } catch (error) {
     console.error("Could not save inquiry:", error);

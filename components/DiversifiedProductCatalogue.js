@@ -2,13 +2,19 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 export default function DiversifiedProductCatalogue() {
-  const [activeGroup, setActiveGroup] = useState("All");
+  const searchParams = useSearchParams();
+  const requestedGroup = searchParams.get("category");
+  const initialGroup = ["woven", "knit", "outerwear", "denim"].includes(requestedGroup?.toLowerCase())
+    ? requestedGroup[0].toUpperCase() + requestedGroup.slice(1).toLowerCase()
+    : "All";
+  const [activeGroup, setActiveGroup] = useState(initialGroup);
   const [products, setProducts] = useState([]);
   const [error, setError] = useState("");
-  const groups = ["All", ...new Set(products.map((product) => product.category?.name).filter(Boolean))];
+  const groups = ["All", "Woven", "Knit", "Outerwear", "Denim"];
   const visibleProducts = useMemo(
     () => activeGroup === "All" ? products : products.filter((product) => product.category?.name === activeGroup),
     [activeGroup, products],
@@ -28,6 +34,10 @@ export default function DiversifiedProductCatalogue() {
     }
     loadProducts();
   }, []);
+
+  useEffect(() => {
+    setActiveGroup(initialGroup);
+  }, [initialGroup]);
 
   return (
     <div>

@@ -9,10 +9,19 @@ export default function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [productsOpen, setProductsOpen] = useState(false);
-  const [navigation, setNavigation] = useState({ core: [], diversified: [] });
-  const [navigationError, setNavigationError] = useState("");
+  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [navigation, setNavigation] = useState({
+    core: [
+      { slug: "core-knitwear", name: "Knitwear" },
+      { slug: "core-woven-wear", name: "Woven Wear" },
+      { slug: "core-sweaters", name: "Sweaters" },
+      { slug: "core-activewear", name: "Activewear" },
+    ],
+    diversified: [],
+  });
   const [shrunk, setShrunk] = useState(false);
   const productsRef = useRef(null);
+  const categoryRef = useRef(null);
   const navRef = useRef(null);
 
   useEffect(() => {
@@ -24,7 +33,7 @@ export default function SiteHeader() {
         if (!result.data?.core || !result.data?.diversified) throw new Error("The navigation response was invalid.");
         setNavigation(result.data);
       } catch (error) {
-        setNavigationError(error.message);
+        console.warn("Public navigation could not be loaded:", error);
       }
     }
 
@@ -41,6 +50,7 @@ export default function SiteHeader() {
   useEffect(() => {
     setOpen(false);
     setProductsOpen(false);
+    setCategoryOpen(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -68,8 +78,12 @@ export default function SiteHeader() {
 
   useEffect(() => {
     const closeDropdown = (event) => {
-      if (event.key === "Escape" || (event.type === "pointerdown" && !productsRef.current?.contains(event.target))) {
+      if (event.key === "Escape") {
         setProductsOpen(false);
+        setCategoryOpen(false);
+      } else if (event.type === "pointerdown") {
+        if (!productsRef.current?.contains(event.target)) setProductsOpen(false);
+        if (!categoryRef.current?.contains(event.target)) setCategoryOpen(false);
       }
     };
     document.addEventListener("pointerdown", closeDropdown);
@@ -79,6 +93,14 @@ export default function SiteHeader() {
       document.removeEventListener("keydown", closeDropdown);
     };
   }, []);
+
+  const categoryOptions = [
+    { label: "All", href: "/diversified-products", query: "" },
+    { label: "Woven", href: "/diversified-products?category=woven", query: "woven" },
+    { label: "Knit", href: "/diversified-products?category=knit", query: "knit" },
+    { label: "Outerwear", href: "/diversified-products?category=outerwear", query: "outerwear" },
+    { label: "Denim", href: "/diversified-products?category=denim", query: "denim" },
+  ];
 
   return (
     <header className={`site-header${shrunk ? " site-header--shrink" : ""}`}>
@@ -113,7 +135,6 @@ export default function SiteHeader() {
             </button>
             <ul id="products-menu" className="nav__dropdown-menu">
               <li><Link href="/products" className={pathname === "/products" ? "nav__dropdown-link nav__dropdown-link--active" : "nav__dropdown-link"}>All Product Offerings</Link></li>
-              {!navigationError && !navigation.core.length && <li><span className="nav__dropdown-link">Loading navigation...</span></li>}
               {navigation.core.map((product) => (
                 <li key={product.slug}>
                   <Link
@@ -124,19 +145,39 @@ export default function SiteHeader() {
                   </Link>
                 </li>
               ))}
-              <li className="nav__dropdown-heading">Diversified</li>
-              {navigation.diversified.map((group) => (
-                <li key={group.slug}>
-                  <Link href={`/diversified-products?category=${group.slug.replace(/^diversified-/, "")}`} className="nav__dropdown-link">{group.name}</Link>
+            </ul>
+          </li>
+          <li
+            ref={categoryRef}
+            className={`nav__dropdown nav__dropdown--category${categoryOpen ? " nav__dropdown--open" : ""}`}
+            onMouseEnter={() => setCategoryOpen(true)}
+            onMouseLeave={() => setCategoryOpen(false)}
+          >
+            <button
+              className={`nav__link nav__dropdown-toggle${pathname === "/diversified-products" ? " nav__link--active" : ""}`}
+              aria-expanded={categoryOpen}
+              aria-controls="category-menu"
+              onClick={() => setCategoryOpen((value) => !value)}
+            >
+              Category <span className="nav__dropdown-chevron" aria-hidden="true" />
+            </button>
+            <ul id="category-menu" className="nav__dropdown-menu">
+              {categoryOptions.map((option) => (
+                <li key={option.label}>
+                  <Link
+                    href={option.href}
+                    className="nav__dropdown-link"
+                  >
+                    {option.label}
+                  </Link>
                 </li>
               ))}
-              {navigationError && <li><span className="nav__dropdown-link" role="alert">{navigationError}</span></li>}
             </ul>
           </li>
           {primaryNavigation.slice(2).map(({ href, label, match }) => (
             <li key={href}><Link href={href} className={`nav__link${match(pathname) ? " nav__link--active" : ""}`}>{label}</Link></li>
           ))}
-          <li><Link href="/contact" className="btn btn--gold">Get a Quote</Link></li>
+          <li className="nav__quote"><Link href="/contact" className="btn btn--gold whitespace-nowrap">Get a Quote</Link></li>
         </ul>
       </nav>
     </header>

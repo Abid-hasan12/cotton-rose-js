@@ -22,7 +22,15 @@ async function imageId(url, alt) {
 
 export async function GET() {
   const denied = await requireAdmin(); if (denied) return denied;
-  try { return NextResponse.json(await query(`${select} ORDER BY sort_order, name`)); }
+  try {
+    const rows = await query(`${select} ORDER BY sort_order, name`);
+    return NextResponse.json(rows.map((row) => {
+      let responsibilities = [];
+      try { responsibilities = JSON.parse(row.responsibilities || "[]"); } catch {}
+      if (!Array.isArray(responsibilities)) responsibilities = [];
+      return { ...row, responsibilities };
+    }));
+  }
   catch (error) { console.error("Could not load leadership:", error); return NextResponse.json({ message: "Leadership could not be loaded." }, { status: 500 }); }
 }
 export async function POST(request) {
