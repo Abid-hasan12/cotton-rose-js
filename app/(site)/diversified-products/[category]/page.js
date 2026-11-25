@@ -4,11 +4,20 @@ import PageHero from "@/components/PageHero";
 import FadeIn from "@/components/FadeIn";
 import ProductGallery from "@/components/ProductGallery";
 import CtaBanner from "@/components/CtaBanner";
-import { fetchPublicApi } from "@/lib/public-api-client";
+import { unstable_cache } from "next/cache";
+import { getPublicProducts } from "@/lib/public-products";
+
+export const dynamic = "force-dynamic";
+
+const getDiversifiedProducts = unstable_cache(
+  async () => (await getPublicProducts({ group: "diversified", page: 1, limit: 100 })).data,
+  ["diversified-products"],
+  { revalidate: 600, tags: ["products"] },
+);
 
 export async function generateMetadata({ params }) {
   const { category } = await params;
-  const products = await fetchPublicApi("/api/products?group=diversified&limit=100", "products");
+  const products = await getDiversifiedProducts();
   const product = products.find((item) => item.slug === category);
   if (!product) return {};
   return { title: product.name, description: `${product.summary} Explore CottonRose ${product.name.toLowerCase()} sourcing support.` };
@@ -16,7 +25,7 @@ export async function generateMetadata({ params }) {
 
 export default async function DiversifiedCategoryPage({ params }) {
   const { category } = await params;
-  const diversifiedProducts = await fetchPublicApi("/api/products?group=diversified&limit=100", "products");
+  const diversifiedProducts = await getDiversifiedProducts();
   const product = diversifiedProducts.find((item) => item.slug === category);
   if (!product) notFound();
   const currentIndex = diversifiedProducts.findIndex(({ slug }) => slug === product.slug);
