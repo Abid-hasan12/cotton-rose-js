@@ -19,7 +19,7 @@ export async function GET() {
        FROM inquiries ORDER BY created_at DESC`,
     );
     return NextResponse.json(rows.map((row) => {
-      const value = String(row.status || "new").trim().toLower();
+      const value = String(row.status || "new").trim().toLowerCase();
       const status = value === "pending" ? "new"
         : value === "contacted" ? "in_progress"
         : ["new", "in_progress", "replied", "closed"].includes(value) ? value
